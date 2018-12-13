@@ -1,0 +1,11 @@
+Standard      : IEC62353-Alternative,,,,
+TestName,Partsconnected,Value,HighLimits,Status
+Protective Earth Resistance,,.254 Ohm,,Pass
+Insulation Resistance,Mains to Protective Earth,999M ohm,,Pass
+Insulation Resistance,Mains to Applied Parts,999 M ohm,,Pass
+Insulation Resistance,Applied Parts to Non-Earth Accessible Conductive Part,999 M ohm,,Pass
+Mains Voltage,Live to Neutral,230.1 v,,Pass
+Mains Voltage,Neutral to Earth,2.9v,,Pass
+Mains Voltage,live to earth,228.3v,,Pass
+Alternative Equipment Leakage,closed earth,557,,Pass
+Alternative Equipment Leakage,shorted mains,4.5,,Pass

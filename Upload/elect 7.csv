@@ -1,0 +1,10 @@
+SlNo,TestName,Partsconnected,Value,HighLimits,Status
+1,Protective Earth Resistance,,0.239Ohm,0.3,Pass
+2,Insulation Resistance,Mains to Protective Earth,999M ohm,,Pass
+3,Insulation Resistance,Mains to Applied Parts,999 M ohm,,Pass
+4,Insulation Resistance,Applied Parts to Non-Earth Accessible Conductive Part,999 M ohm,,Pass
+5,Mains Voltage,Live to Neutral,229.5 v,,Pass
+6,Mains Voltage,Neutral to Earth,2.9v,,Pass
+7,Mains Voltage,live to earth,228.6v,,Pass
+8,Alternative Equipment Leakage,closed earth,562,1000 uA,Pass
+9,Alternative Equipment Leakage,shorted mains,5.3,50 uA,Pass

@@ -1,0 +1,42 @@
+﻿body {
+}
+/**** grid view ****/
+.mGrid {
+align:center;
+font-family:Arial, Tahoma, Verdana, Helvetica;
+font-size: 14px;
+font-weight:normal;
+margin: 8px 0px 0px 0px;
+text-align: left;
+border-collapse: collapse;
+background:#ffffff
+}
+.mGrid td { 
+padding: 8px;
+color: #585858;
+border: 1px solid #e7ecef;
+}
+.mGrid th { 
+padding: 8px;
+margin: 0px;
+font-weight:bold;
+font-size: 16px;
+text-align: left;
+color: #5E5A59;
+background: #C6B2AB;
+border: 1px solid #e7ecef;
+}
+.mGrid tbody tr:hover td{
+background: #ffffff;
+}
+
+.mgridlink:link
+{
+    text-decoration: none;
+    color:#3A7DBC;      
+}
+.mgridlink:hover
+{
+    text-decoration:underline;
+    color:Blue;
+}

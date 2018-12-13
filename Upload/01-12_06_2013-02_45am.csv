@@ -1,0 +1,63 @@
+﻿,,,,,,,Date:2/10/2014
+
+Test Setup:
+,,,,,DUT Information
+
+Operator ID:,,,,,Equipment Number:,,01
+Calibration Tech :,,7686,,,Serial Number :,,
+Calibration Date :,,M11D27Y2012,,,Manufacturer:,,bpl
+Firmware Version :,,2.03.17,,,Model:,,df 2509
+Serial Number:,,2244039,,,Location:,,
+Date:,,12/06/2013 02:45am,,,Other:,,
+JOB Name:,,
+
+
+Template Information
+
+Template Name:,,62353-Alt. Defibrillator,,,Standard:,,IEC62353-Alternative
+Pause after Power ON:,,NO,,,Pause before Power OFF:,,NO
+Power ON delay:,,2,,,Power OFF delay:,,0
+Test Speed:,,NORMAL,,,Test Mode:,,AUTO
+Halt on Test Failure:,,YES,,,Multi PE Test:,,NO
+Include Time:,,YES,,,Multi Resstore:,,WORST/LAST
+Insulation Resistance Voltage:,,500V,,,Reverse Polarity:,,YES
+Multi Enclosure Test :,,NO
+
+
+
+PLC Configuration-Applied part setup
+
+AP Name:,AP Type:,AP Num:
+
+ECG,CF,1
+ECG,CF,1
+ECG,CF,1
+Paddle,BF,1
+Paddle,BF,1
+
+ESA615 Test Results
+
+Test Name,,,,,Value,High Limits,Low Limits,Status
+
+Protective Earth Resistance,,,,, 0.086 Ohm,0.3,-,P
+Insulation Resistance,,,,,,,,P
+,Mains to Protective Earth,,,, 999 MOhm,-,-,P
+,Mains to Applied Parts,,,, 999 MOhm,-,-,P
+,Applied Parts to Non-Earth Accessible Conductive Part,,,, 999 MOhm,-,-,P
+Mains Voltage,,,,,,,,P
+,Live to Neutral,,,, 229.4 V,-,-,P
+,Neutral to Earth,,,, 0.7 V,-,-,P
+,Live to Earth,,,, 228.5 V,-,-,P
+Alternative Equipment Leakage,,,,,,,,P
+,Closed Earth,,,, 212 uAAC,1000,-,P
+Alternative Applied Part Leakage,,,,,,,,P
+,Shorted Mains,,,,,,,P
+,,ECG,,, 1.4 uAAC,50,-,P
+,,Paddle,,, 1.2 uAAC,5000,-,P
+
+
+
+
+
+ ,,,,,,, _________ 
+ ,,,,,,,Signature
