@@ -1829,6 +1829,14 @@ public partial class AddReport : System.Web.UI.Page
             Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 61;
         }
+        if (ddlperformance.SelectedValue == "62")
+        {
+            Session["performancename62"] = ddlperformance.SelectedItem.Text;
+            Session["perfid62"] = ddlperformance.SelectedValue;
+            Session["Editreportid62"] = editreport_hidden.Value;
+            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            perfmulti.ActiveViewIndex = 62;
+        }
         //ddlperformance.Focus();
         txtremarks.Focus();
     }

@@ -28,10 +28,10 @@ public partial class Perf_Control_Views_View_Perf_micropipette : System.Web.UI.U
 
     }
 
-    public void Bind_PerfHolter(string sReportid,string sPerfid)
+    public void Bind_PerfHolter(string sReportid, string sPerfid)
     {
-        
-         perf_holterid++;
+
+        perf_holterid++;
         db1.strCommand = "select Perf_Value from Performance_Values where " +
             "Report_info_ID='" + sReportid + "' and PerfID='" + sPerfid + "'";
         DataTable dt_value = db1.selecttable();
@@ -116,7 +116,7 @@ public partial class Perf_Control_Views_View_Perf_micropipette : System.Web.UI.U
         perfholterdiv.Visible = true;
         tr_perfholter1.Visible = true;
         tr_perfholter2.Visible = true;
-        
+
     }
     public void Hide_perftable()
     {
@@ -128,7 +128,7 @@ public partial class Perf_Control_Views_View_Perf_micropipette : System.Web.UI.U
             tr_perfholter1.Visible = false;
         if (perf_holtertr2 == 0)
             tr_perfholter2.Visible = false;
-       
+
 
     }
 }

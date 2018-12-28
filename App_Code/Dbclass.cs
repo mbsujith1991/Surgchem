@@ -111,7 +111,7 @@ public class Dbclass
         con.Open();
         SqlCommand cmd = new SqlCommand(strCommand,con);
         SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-        con.Close();
+        //con.Close();
         return dr;
     }
 

@@ -66,6 +66,8 @@
 <%@ Register Src="~/Perf Control Views/View_FiO2.ascx" TagPrefix="uc1" TagName="View_FiO2" %>
 <%@ Register Src="~/Perf Control Views/View_RPMMeasurement_4_28_18.ascx" TagPrefix="uc1" TagName="View_RPMMeasurement_4_28_18" %>
 <%@ Register Src="~/Perf Control Views/View_PressureAutoclave132.ascx" TagPrefix="uc1" TagName="View_PressureAutoclave132" %>
+<%@ Register Src="~/Perf Control Views/View_Perf_micropipetteNew.ascx" TagPrefix="uc1" TagName="View_Perf_micropipetteNew" %>
+
 
 <%--<%@ Register Src="~/Perf Control Views/View_FiO2_New.ascx" TagPrefix="uc1" TagName="View_FiO2_New" %>--%>
 
@@ -745,6 +747,11 @@
         <uc1:View_PressureAutoclave132 runat="server" ID="View_PressureAutoclave132" />
         <div class="clear"></div>
         <%--Pressure Measurement of Autoclave 132 ends--%>
+
+         <%--Micro Pipette New starts--%>
+        <uc1:View_Perf_micropipetteNew runat="server" ID="View_Perf_micropipetteNew" />
+        <div class="clear"></div>
+        <%--Micro Pipette New ends--%>
 
         <div style="height: 10px;"></div>
         <div class="align_middle" style="font-weight: bold; width: 100%;" id="electricaltestdiv" runat="server">
