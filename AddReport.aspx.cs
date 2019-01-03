@@ -142,24 +142,30 @@ public partial class AddReport : System.Web.UI.Page
                 string[] reportnoarray = max_reportno.Split('/');
                 string reportnovalue = reportnoarray[1].ToString();
                 int reportno_add = int.Parse(reportnovalue) + 1;
-                txtreportno.Text = "BMT/" + reportno_add.ToString();
-                txtbarcode.Text = "BMT/" + reportno_add.ToString();
+                lblReportNo.Text = "BMT/";
+                lblBarcode.Text = "BMT/";
+                txtreportno.Text = reportno_add.ToString();
+                txtbarcode.Text = reportno_add.ToString();
             }
             else if (utypeid_hidden.Value == "5")
             {
                 string[] reportnoarray = max_reportno.Split('/');
                 string reportnovalue = reportnoarray[1].ToString();
                 int reportno_add = int.Parse(reportnovalue) + 1;
-                txtreportno.Text = "BMT-MTH/" + reportno_add.ToString();
-                txtbarcode.Text = "BMT-MTH/" + reportno_add.ToString();
+                lblReportNo.Text = "BMT-MTH/";
+                lblBarcode.Text = "BMT-MTH/";
+                txtreportno.Text = reportno_add.ToString();
+                txtbarcode.Text = reportno_add.ToString();
             }
             else if (utypeid_hidden.Value == "6")
             {
                 string[] reportnoarray = max_reportno.Split('/');
                 string reportnovalue = reportnoarray[1].ToString();
                 int reportno_add = int.Parse(reportnovalue) + 1;
-                txtreportno.Text = "BMT-ACH/" + reportno_add.ToString();
-                txtbarcode.Text = "BMT-ACH/" + reportno_add.ToString();
+                lblReportNo.Text = "BMT-ACH/";
+                lblBarcode.Text = "BMT-ACH/";
+                txtreportno.Text = reportno_add.ToString();
+                txtbarcode.Text = reportno_add.ToString();
             }
         }
     }
@@ -648,9 +654,9 @@ public partial class AddReport : System.Web.UI.Page
 
             db1.strCommand = "insert into Report_Info(ReportNo,Date_of_calibration,Calibration_Due_on,ElectID,Barcode_ID," +
                 "ProductID,ECM_ID,Tracibility_ID,HospitalID,Remarks,PerfID) values('"
-                + txtreportno.Text.Trim().Replace("'", "''")
+                + lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''")
                 + "','" + txtdateofcalib.Text.Trim().Replace("'", "''") + "','" + txtduedate.Text.Trim().Replace("'", "''") + "','"
-                + maxelectid.Value + "','" + txtbarcode.Text.Trim().Replace("'", "''") + "','" + productidhidden.Value + "'," +
+                + maxelectid.Value + "','" + lblBarcode.Text + txtbarcode.Text.Trim().Replace("'", "''") + "','" + productidhidden.Value + "'," +
                 "'" + ecmidhidden.Value + "','" + lblValues.Text + "','" + ddhospitalname.SelectedValue + "','" + txtremarks.Text.Trim().Replace("'", "''") + "'," +
             "'" + perfid_hidden.Value + "')";
             db1.insertqry();
@@ -659,10 +665,10 @@ public partial class AddReport : System.Web.UI.Page
         {
             db1.strCommand = "insert into Report_Info(ReportNo,Date_of_calibration,Calibration_Due_on,PerfID,Barcode_ID,ProductID," +
                 "ECM_ID,Tracibility_ID,HospitalID,Remarks,ElectID) values('"
-                + txtreportno.Text.Trim().Replace("'", "''") + "','"
+                + lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''") + "','"
                 + txtdateofcalib.Text.Trim().Replace("'", "''") + "','"
                 + txtduedate.Text.Trim().Replace("'", "''") + "','"
-                + perfid_hidden.Value + "','" + txtbarcode.Text.Trim().Replace("'", "''") + "','" + productidhidden.Value + "'," +
+                + perfid_hidden.Value + "','" + lblBarcode.Text + txtbarcode.Text.Trim().Replace("'", "''") + "','" + productidhidden.Value + "'," +
                 "'" + ecmidhidden.Value + "','" + lblValues.Text + "','" + ddhospitalname.SelectedValue + "'," +
             "'" + txtremarks.Text.Trim().Replace("'", "''") + "','" + maxelectid.Value + "')";
             db1.insertqry();
@@ -671,10 +677,10 @@ public partial class AddReport : System.Web.UI.Page
         {
             db1.strCommand = "insert into Report_Info(ReportNo,Date_of_calibration,Calibration_Due_on,PerfID,ElectID,Barcode_ID," +
                 "ProductID,ECM_ID,Tracibility_ID,HospitalID,Remarks) values('"
-                + txtreportno.Text.Trim().Replace("'", "''") + "','"
+                + lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''") + "','"
                 + txtdateofcalib.Text.Trim().Replace("'", "''") + "','"
                 + txtduedate.Text.Trim().Replace("'", "''") + "','"
-                + perfid_hidden.Value + "','" + maxelectid.Value + "','" + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
+                + perfid_hidden.Value + "','" + maxelectid.Value + "','" + lblBarcode.Text + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
                 "'" + productidhidden.Value + "','" + ecmidhidden.Value + "','" + lblValues.Text + "','" + ddhospitalname.SelectedValue + "'," +
             "'" + txtremarks.Text.Trim().Replace("'", "''") + "')";
             db1.insertqry();
@@ -700,7 +706,7 @@ public partial class AddReport : System.Web.UI.Page
     //get the Report_info Id for adding to other tables.
     public void select_Reportinfo()
     {
-        db1.strCommand = "select Report_info_ID from Report_Info where ReportNo='" + txtreportno.Text.Trim() + "'";
+        db1.strCommand = "select Report_info_ID from Report_Info where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim() + "'";
         reportid_hidden.Value = db1.executescalar().ToString();
         int maxidaddone = Convert.ToInt32(db1.executescalar());
         reportidmax_hidden.Value = (maxidaddone + 1).ToString();
@@ -1036,20 +1042,20 @@ public partial class AddReport : System.Web.UI.Page
     //Bind Report_info_ID to Performance Values//
     public void Update_Reportinfoid_PerfValues()
     {
-        db1.strCommand = "Update Performance_Values set Report_info_ID='" + reportid_hidden.Value + "' where ReportNo='" + txtreportno.Text.Trim() + "'";
+        db1.strCommand = "Update Performance_Values set Report_info_ID='" + reportid_hidden.Value + "' where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim() + "'";
         db1.insertqry();
     }
 
     public void add_Reportinfoto_perfvaluesplit()
     {
         string reportno = "";
-        db1.strCommand = "Select Report_info_ID from Report_Info where ReportNo='" + txtreportno.Text.Trim() + "'";
+        db1.strCommand = "Select Report_info_ID from Report_Info where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim() + "'";
         DataTable dt_reportno = db1.selecttable();
         if (dt_reportno.Rows.Count > 0)
         {
             reportno = dt_reportno.Rows[0]["Report_info_ID"].ToString();
         }
-        db1.strCommand = "select * from perfvaluesplit where ReportNo='" + txtreportno.Text.Trim() + "'";
+        db1.strCommand = "select * from perfvaluesplit where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim() + "'";
         DataTable dt_perfvalue = db1.selecttable();
         if (dt_perfvalue.Rows.Count > 0)
         {
@@ -1064,14 +1070,14 @@ public partial class AddReport : System.Web.UI.Page
 
     public void Update_ReportInfoID_PerfValues()
     {
-        db1.strCommand = "Update Performance_Values set Report_info_ID='" + editreport_hidden.Value + "' where ReportNo='" + txtreportno.Text.Trim() + "'";
+        db1.strCommand = "Update Performance_Values set Report_info_ID='" + editreport_hidden.Value + "' where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim() + "'";
         db1.insertqry();
     }
 
     //this code not using
     public void Update_addreportinfo_perfvaluesplit()
     {
-        db1.strCommand = "select * from perfvaluesplit where ReportNo='" + txtreportno.Text.Trim() + "'";
+        db1.strCommand = "select * from perfvaluesplit where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim() + "'";
         DataTable dt_perfvalue = db1.selecttable();
         if (dt_perfvalue.Rows.Count > 0)
         {
@@ -1086,7 +1092,7 @@ public partial class AddReport : System.Web.UI.Page
 
     public void Delete_perfvaluesplit()
     {
-        db1.strCommand = "delete from perfvaluesplit where ReportNo='" + txtreportno.Text.Trim() + "'";
+        db1.strCommand = "delete from perfvaluesplit where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim() + "'";
         db1.insertqry();
     }
     public void BindValue()
@@ -1193,13 +1199,13 @@ public partial class AddReport : System.Web.UI.Page
         if (reportid != "")
         {
 
-            txtreportno.Text = "BMT/" + (Convert.ToInt32(reportid) + 1).ToString();
-            txtbarcode.Text = "BMT/" + (Convert.ToInt32(reportid) + 1).ToString();
+            txtreportno.Text = (Convert.ToInt32(reportid) + 1).ToString();
+            txtbarcode.Text = (Convert.ToInt32(reportid) + 1).ToString();
         }
         else
         {
-            txtbarcode.Text = "BMT/1";
-            txtreportno.Text = "BMT/1";
+            txtbarcode.Text = "1";
+            txtreportno.Text = "1";
         }
     }
 
@@ -1228,7 +1234,7 @@ public partial class AddReport : System.Web.UI.Page
             editreport_hidden.Value = "";
             try
             {
-                db1.strCommand = "select ReportNo from Report_Info where ReportNo='" + txtreportno.Text.Trim().Replace("'", "''") + "'";
+                db1.strCommand = "select ReportNo from Report_Info where ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''") + "'";
                 DataTable dt_reptno = db1.selecttable();
                 if (dt_reptno.Rows.Count <= 0)
                 {
@@ -1246,7 +1252,7 @@ public partial class AddReport : System.Web.UI.Page
                         Delete_check_perftest();
                         //add_Reportinfoto_perfvaluesplit();
                         Update_Reportinfoid_PerfValues();
-                        Response.Redirect("EditReport.aspx?ReportNoid='" + txtreportno.Text.Trim() + "'");
+                        Response.Redirect("EditReport.aspx?ReportNoid='" + lblReportNo.Text + txtreportno.Text.Trim() + "'");
                     }
                     else
                     {
@@ -1284,7 +1290,7 @@ public partial class AddReport : System.Web.UI.Page
                     Update_ReportInfoID_PerfValues();
                     //Update_addreportinfo_perfvaluesplit();
                     //Delete_perfvaluesplit();
-                    Response.Redirect("EditReport.aspx?ReportNoid='" + txtbarcode.Text.Trim().Replace("'", "''") + "'");
+                    Response.Redirect("EditReport.aspx?ReportNoid='" + lblBarcode.Text + txtbarcode.Text.Trim().Replace("'", "''") + "'");
                 }
                 else
                 {
@@ -1336,7 +1342,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename1"] = ddlperformance.SelectedItem.Text;
             Session["perfid1"] = ddlperformance.SelectedValue;
             Session["Editreportid1"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 1;
 
         }
@@ -1345,7 +1351,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename2"] = ddlperformance.SelectedItem.Text;
             Session["perfid2"] = ddlperformance.SelectedValue;
             Session["Editreportid2"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 2;
         }
         if (ddlperformance.SelectedValue == "3")
@@ -1353,7 +1359,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename3"] = ddlperformance.SelectedItem.Text;
             Session["perfid3"] = ddlperformance.SelectedValue;
             Session["Editreportid3"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 3;
         }
         if (ddlperformance.SelectedValue == "4")
@@ -1361,7 +1367,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename4"] = ddlperformance.SelectedItem.Text;
             Session["perfid4"] = ddlperformance.SelectedValue;
             Session["Editreportid4"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 4;
         }
         if (ddlperformance.SelectedValue == "5")
@@ -1369,7 +1375,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename5"] = ddlperformance.SelectedItem.Text;
             Session["perfid5"] = ddlperformance.SelectedValue;
             Session["Editreportid5"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 5;
         }
         if (ddlperformance.SelectedValue == "6")
@@ -1377,7 +1383,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename6"] = ddlperformance.SelectedItem.Text;
             Session["perfid6"] = ddlperformance.SelectedValue;
             Session["Editreportid6"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 6;
         }
         if (ddlperformance.SelectedValue == "7")
@@ -1385,7 +1391,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename7"] = ddlperformance.SelectedItem.Text;
             Session["perfid7"] = ddlperformance.SelectedValue;
             Session["Editreportid7"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 7;
         }
         if (ddlperformance.SelectedValue == "8")
@@ -1393,7 +1399,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename8"] = ddlperformance.SelectedItem.Text;
             Session["perfid8"] = ddlperformance.SelectedValue;
             Session["Editreportid8"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 8;
         }
         if (ddlperformance.SelectedValue == "9")
@@ -1401,7 +1407,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename9"] = ddlperformance.SelectedItem.Text;
             Session["perfid9"] = ddlperformance.SelectedValue;
             Session["Editreportid9"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 9;
         }
         if (ddlperformance.SelectedValue == "10")
@@ -1409,7 +1415,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename10"] = ddlperformance.SelectedItem.Text;
             Session["perfid10"] = ddlperformance.SelectedValue;
             Session["Editreportid10"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 10;
         }
         if (ddlperformance.SelectedValue == "11")
@@ -1417,7 +1423,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename11"] = ddlperformance.SelectedItem.Text;
             Session["perfid11"] = ddlperformance.SelectedValue;
             Session["Editreportid11"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 11;
         }
         if (ddlperformance.SelectedValue == "12")
@@ -1425,7 +1431,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename12"] = ddlperformance.SelectedItem.Text;
             Session["perfid12"] = ddlperformance.SelectedValue;
             Session["Editreportid12"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 12;
         }
         if (ddlperformance.SelectedValue == "13")
@@ -1433,7 +1439,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename13"] = ddlperformance.SelectedItem.Text;
             Session["perfid13"] = ddlperformance.SelectedValue;
             Session["Editreportid13"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 13;
         }
         if (ddlperformance.SelectedValue == "14")
@@ -1441,7 +1447,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename14"] = ddlperformance.SelectedItem.Text;
             Session["perfid14"] = ddlperformance.SelectedValue;
             Session["Editreportid14"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 14;
         }
         if (ddlperformance.SelectedValue == "15")
@@ -1449,7 +1455,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename15"] = ddlperformance.SelectedItem.Text;
             Session["perfid15"] = ddlperformance.SelectedValue;
             Session["Editreportid15"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 15;
         }
         if (ddlperformance.SelectedValue == "16")
@@ -1457,7 +1463,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename16"] = ddlperformance.SelectedItem.Text;
             Session["perfid16"] = ddlperformance.SelectedValue;
             Session["Editreportid16"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 16;
         }
         if (ddlperformance.SelectedValue == "17")
@@ -1465,7 +1471,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename17"] = ddlperformance.SelectedItem.Text;
             Session["perfid17"] = ddlperformance.SelectedValue;
             Session["Editreportid17"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 17;
         }
         if (ddlperformance.SelectedValue == "18")
@@ -1473,7 +1479,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename18"] = ddlperformance.SelectedItem.Text;
             Session["perfid18"] = ddlperformance.SelectedValue;
             Session["Editreportid18"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 18;
         }
         if (ddlperformance.SelectedValue == "19")
@@ -1481,7 +1487,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename19"] = ddlperformance.SelectedItem.Text;
             Session["perfid19"] = ddlperformance.SelectedValue;
             Session["Editreportid19"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 19;
         }
         if (ddlperformance.SelectedValue == "20")
@@ -1489,7 +1495,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename20"] = ddlperformance.SelectedItem.Text;
             Session["perfid20"] = ddlperformance.SelectedValue;
             Session["Editreportid20"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 20;
         }
         if (ddlperformance.SelectedValue == "21")
@@ -1497,7 +1503,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename21"] = ddlperformance.SelectedItem.Text;
             Session["perfid21"] = ddlperformance.SelectedValue;
             Session["Editreportid21"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 21;
         }
         if (ddlperformance.SelectedValue == "22")
@@ -1505,7 +1511,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename22"] = ddlperformance.SelectedItem.Text;
             Session["perfid22"] = ddlperformance.SelectedValue;
             Session["Editreportid22"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 22;
         }
         if (ddlperformance.SelectedValue == "23")
@@ -1513,7 +1519,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename23"] = ddlperformance.SelectedItem.Text;
             Session["perfid23"] = ddlperformance.SelectedValue;
             Session["Editreportid23"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 23;
         }
         if (ddlperformance.SelectedValue == "24")
@@ -1521,7 +1527,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename24"] = ddlperformance.SelectedItem.Text;
             Session["perfid24"] = ddlperformance.SelectedValue;
             Session["Editreportid24"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 24;
         }
         if (ddlperformance.SelectedValue == "25")
@@ -1529,7 +1535,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename25"] = ddlperformance.SelectedItem.Text;
             Session["perfid25"] = ddlperformance.SelectedValue;
             Session["Editreportid25"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 25;
         }
         if (ddlperformance.SelectedValue == "26")
@@ -1537,7 +1543,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename26"] = ddlperformance.SelectedItem.Text;
             Session["perfid26"] = ddlperformance.SelectedValue;
             Session["Editreportid26"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 26;
         }
         if (ddlperformance.SelectedValue == "27")
@@ -1545,7 +1551,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename27"] = ddlperformance.SelectedItem.Text;
             Session["perfid27"] = ddlperformance.SelectedValue;
             Session["Editreportid27"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 27;
         }
         if (ddlperformance.SelectedValue == "28")
@@ -1553,7 +1559,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename28"] = ddlperformance.SelectedItem.Text;
             Session["perfid28"] = ddlperformance.SelectedValue;
             Session["Editreportid28"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 28;
         }
         if (ddlperformance.SelectedValue == "29")
@@ -1561,7 +1567,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename29"] = ddlperformance.SelectedItem.Text;
             Session["perfid29"] = ddlperformance.SelectedValue;
             Session["Editreportid29"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 29;
         }
         if (ddlperformance.SelectedValue == "30")
@@ -1569,7 +1575,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename30"] = ddlperformance.SelectedItem.Text;
             Session["perfid30"] = ddlperformance.SelectedValue;
             Session["Editreportid30"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 30;
         }
         if (ddlperformance.SelectedValue == "31")
@@ -1577,7 +1583,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename31"] = ddlperformance.SelectedItem.Text;
             Session["perfid31"] = ddlperformance.SelectedValue;
             Session["Editreportid31"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 31;
         }
         if (ddlperformance.SelectedValue == "32")
@@ -1585,7 +1591,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename32"] = ddlperformance.SelectedItem.Text;
             Session["perfid32"] = ddlperformance.SelectedValue;
             Session["Editreportid32"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 32;
         }
         if (ddlperformance.SelectedValue == "33")
@@ -1593,7 +1599,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename33"] = ddlperformance.SelectedItem.Text;
             Session["perfid33"] = ddlperformance.SelectedValue;
             Session["Editreportid33"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 33;
         }
         if (ddlperformance.SelectedValue == "34")
@@ -1601,7 +1607,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename34"] = ddlperformance.SelectedItem.Text;
             Session["perfid34"] = ddlperformance.SelectedValue;
             Session["Editreportid34"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 34;
         }
         if (ddlperformance.SelectedValue == "35")
@@ -1609,7 +1615,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename35"] = ddlperformance.SelectedItem.Text;
             Session["perfid35"] = ddlperformance.SelectedValue;
             Session["Editreportid35"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 35;
         }
         if (ddlperformance.SelectedValue == "36")
@@ -1617,7 +1623,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename36"] = ddlperformance.SelectedItem.Text;
             Session["perfid36"] = ddlperformance.SelectedValue;
             Session["Editreportid36"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 36;
         }
         if (ddlperformance.SelectedValue == "37")
@@ -1625,7 +1631,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename37"] = ddlperformance.SelectedItem.Text;
             Session["perfid37"] = ddlperformance.SelectedValue;
             Session["Editreportid37"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 37;
         }
         if (ddlperformance.SelectedValue == "38")
@@ -1633,7 +1639,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename38"] = ddlperformance.SelectedItem.Text;
             Session["perfid38"] = ddlperformance.SelectedValue;
             Session["Editreportid38"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 38;
         }
         if (ddlperformance.SelectedValue == "39")
@@ -1641,7 +1647,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename39"] = ddlperformance.SelectedItem.Text;
             Session["perfid39"] = ddlperformance.SelectedValue;
             Session["Editreportid39"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 39;
         }
         if (ddlperformance.SelectedValue == "40")
@@ -1649,7 +1655,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename40"] = ddlperformance.SelectedItem.Text;
             Session["perfid40"] = ddlperformance.SelectedValue;
             Session["Editreportid40"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 40;
         }
         if (ddlperformance.SelectedValue == "41")
@@ -1657,7 +1663,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename41"] = ddlperformance.SelectedItem.Text;
             Session["perfid41"] = ddlperformance.SelectedValue;
             Session["Editreportid41"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 41;
         }
         if (ddlperformance.SelectedValue == "42")
@@ -1665,7 +1671,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename42"] = ddlperformance.SelectedItem.Text;
             Session["perfid42"] = ddlperformance.SelectedValue;
             Session["Editreportid42"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 42;
         }
         if (ddlperformance.SelectedValue == "43")
@@ -1673,7 +1679,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename43"] = ddlperformance.SelectedItem.Text;
             Session["perfid43"] = ddlperformance.SelectedValue;
             Session["Editreportid43"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 43;
         }
         if (ddlperformance.SelectedValue == "44")
@@ -1681,7 +1687,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename44"] = ddlperformance.SelectedItem.Text;
             Session["perfid44"] = ddlperformance.SelectedValue;
             Session["Editreportid44"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 44;
         }
         if (ddlperformance.SelectedValue == "45")
@@ -1689,7 +1695,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename45"] = ddlperformance.SelectedItem.Text;
             Session["perfid45"] = ddlperformance.SelectedValue;
             Session["Editreportid45"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 45;
         }
         if (ddlperformance.SelectedValue == "46")
@@ -1697,7 +1703,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename46"] = ddlperformance.SelectedItem.Text;
             Session["perfid46"] = ddlperformance.SelectedValue;
             Session["Editreportid46"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 46;
         }
         if (ddlperformance.SelectedValue == "47")
@@ -1705,7 +1711,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename47"] = ddlperformance.SelectedItem.Text;
             Session["perfid47"] = ddlperformance.SelectedValue;
             Session["Editreportid47"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 47;
         }
         if (ddlperformance.SelectedValue == "48")
@@ -1713,7 +1719,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename48"] = ddlperformance.SelectedItem.Text;
             Session["perfid48"] = ddlperformance.SelectedValue;
             Session["Editreportid48"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 48;
         }
 
@@ -1722,7 +1728,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename49"] = ddlperformance.SelectedItem.Text;
             Session["perfid49"] = ddlperformance.SelectedValue;
             Session["Editreportid49"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 49;
         }
 
@@ -1731,7 +1737,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename50"] = ddlperformance.SelectedItem.Text;
             Session["perfid50"] = ddlperformance.SelectedValue;
             Session["Editreportid50"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 50;
         }
 
@@ -1740,7 +1746,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename51"] = ddlperformance.SelectedItem.Text;
             Session["perfid51"] = ddlperformance.SelectedValue;
             Session["Editreportid51"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 51;
         }
 
@@ -1749,7 +1755,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename52"] = ddlperformance.SelectedItem.Text;
             Session["perfid52"] = ddlperformance.SelectedValue;
             Session["Editreportid52"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 52;
         }
 
@@ -1758,7 +1764,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename53"] = ddlperformance.SelectedItem.Text;
             Session["perfid53"] = ddlperformance.SelectedValue;
             Session["Editreportid53"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 53;
         }
 
@@ -1767,7 +1773,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename54"] = ddlperformance.SelectedItem.Text;
             Session["perfid54"] = ddlperformance.SelectedValue;
             Session["Editreportid54"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 54;
         }
 
@@ -1776,7 +1782,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename55"] = ddlperformance.SelectedItem.Text;
             Session["perfid55"] = ddlperformance.SelectedValue;
             Session["Editreportid55"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 55;
         }
 
@@ -1785,7 +1791,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename56"] = ddlperformance.SelectedItem.Text;
             Session["perfid56"] = ddlperformance.SelectedValue;
             Session["Editreportid56"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 56;
         }
 
@@ -1794,7 +1800,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename57"] = ddlperformance.SelectedItem.Text;
             Session["perfid57"] = ddlperformance.SelectedValue;
             Session["Editreportid57"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 57;
         }
         if (ddlperformance.SelectedValue == "58")
@@ -1802,7 +1808,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename58"] = ddlperformance.SelectedItem.Text;
             Session["perfid58"] = ddlperformance.SelectedValue;
             Session["Editreportid58"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 58;
         }
         if (ddlperformance.SelectedValue == "59")
@@ -1810,7 +1816,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename59"] = ddlperformance.SelectedItem.Text;
             Session["perfid59"] = ddlperformance.SelectedValue;
             Session["Editreportid59"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 59;
         }
         if (ddlperformance.SelectedValue == "60")
@@ -1818,7 +1824,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename60"] = ddlperformance.SelectedItem.Text;
             Session["perfid60"] = ddlperformance.SelectedValue;
             Session["Editreportid60"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 60;
         }
         if (ddlperformance.SelectedValue == "61")
@@ -1826,7 +1832,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename61"] = ddlperformance.SelectedItem.Text;
             Session["perfid61"] = ddlperformance.SelectedValue;
             Session["Editreportid61"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 61;
         }
         if (ddlperformance.SelectedValue == "62")
@@ -1834,7 +1840,7 @@ public partial class AddReport : System.Web.UI.Page
             Session["performancename62"] = ddlperformance.SelectedItem.Text;
             Session["perfid62"] = ddlperformance.SelectedValue;
             Session["Editreportid62"] = editreport_hidden.Value;
-            Session["ReportNo"] = txtreportno.Text.Trim().Replace("'", "''");
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 62;
         }
         //ddlperformance.Focus();
@@ -1979,8 +1985,21 @@ public partial class AddReport : System.Web.UI.Page
 
                 //dt_result.Rows.Add(dt.Rows[i]["Report_info_ID"].ToString(), dt.Rows[i]["ReportNo"].ToString(), dt.Rows[i]["Date_of_calibration"].ToString(), dt.Rows[i]["Calibration_Due_on"].ToString(),
                 //    Hospname, Temp, Relative, Ambient, Product, slno, Biomedicalid);
-                txtreportno.Text = dt.Rows[0]["ReportNo"].ToString();
-                txtbarcode.Text = dt.Rows[0]["Barcode_ID"].ToString();
+                if (dt.Rows[0]["ReportNo"].ToString().Contains("BMT/"))
+                {
+                    txtreportno.Text = dt.Rows[0]["ReportNo"].ToString().Replace("BMT/", "");
+                    txtbarcode.Text = dt.Rows[0]["Barcode_ID"].ToString().Replace("BMT/", "");
+                }
+                else if (dt.Rows[0]["ReportNo"].ToString().Contains("BMT-MTH/"))
+                {
+                    txtreportno.Text = dt.Rows[0]["ReportNo"].ToString().Replace("BMT-MTH/", "");
+                    txtbarcode.Text = dt.Rows[0]["Barcode_ID"].ToString().Replace("BMT-MTH/", "");
+                }
+                else if (dt.Rows[0]["ReportNo"].ToString().Contains("BMT-ACH/"))
+                {
+                    txtreportno.Text = dt.Rows[0]["ReportNo"].ToString().Replace("BMT-ACH/", "");
+                    txtbarcode.Text = dt.Rows[0]["Barcode_ID"].ToString().Replace("BMT-ACH/", "");
+                }
                 txtdateofcalib.Text = dt.Rows[0]["Date_of_calibration"].ToString();
                 txtduedate.Text = dt.Rows[0]["Calibration_Due_on"].ToString();
                 txttemperature.Text = Temp;
@@ -2041,7 +2060,7 @@ public partial class AddReport : System.Web.UI.Page
         }
         if (ch_elect.Checked == true && ch_perf.Checked == false)
         {
-            db1.strCommand = "update Report_Info set ReportNo='" + txtreportno.Text.Trim().Replace("'", "''") + "',Barcode_ID='" + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
+            db1.strCommand = "update Report_Info set ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''") + "',Barcode_ID='" + lblBarcode.Text + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
                 "Date_of_calibration='" + txtdateofcalib.Text.Trim().Replace("'", "''") + "',Calibration_Due_on='" + txtduedate.Text.Trim().Replace("'", "''") + "'," +
                 "ProductID='" + productidhidden.Value + "',ElectID='" + maxelectid.Value + "',PerfID='" + 0 + "',ECM_ID='" + ecmidhidden.Value + "',Tracibility_ID='" + lblValues.Text + "'," +
                 "HospitalID='" + ddhospitalname.SelectedValue + "',Remarks='" + txtremarks.Text.Trim().Replace("'", "''") + "' where Report_info_ID='" + editreport_hidden.Value + "'";
@@ -2052,7 +2071,7 @@ public partial class AddReport : System.Web.UI.Page
         }
         else if (ch_perf.Checked == true && ch_elect.Checked == false)
         {
-            db1.strCommand = "update Report_Info set ReportNo='" + txtreportno.Text.Trim().Replace("'", "''") + "',Barcode_ID='" + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
+            db1.strCommand = "update Report_Info set ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''") + "',Barcode_ID='" + lblBarcode.Text + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
                 "Date_of_calibration='" + txtdateofcalib.Text.Trim().Replace("'", "''") + "',Calibration_Due_on='" + txtduedate.Text.Trim().Replace("'", "''") + "'," +
                 "ProductID='" + productidhidden.Value + "',PerfID='" + perfid_hidden.Value + "',ElectID='" + 0 + "',ECM_ID='" + ecmidhidden.Value + "',Tracibility_ID='" + lblValues.Text + "'," +
                 "HospitalID='" + ddhospitalname.SelectedValue + "',Remarks='" + txtremarks.Text.Trim().Replace("'", "''") + "' where Report_info_ID='" + editreport_hidden.Value + "'";
@@ -2062,7 +2081,7 @@ public partial class AddReport : System.Web.UI.Page
         }
         else if (ch_elect.Checked == true && ch_perf.Checked == true)
         {
-            db1.strCommand = "update Report_Info set ReportNo='" + txtreportno.Text.Trim().Replace("'", "''") + "',Barcode_ID='" + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
+            db1.strCommand = "update Report_Info set ReportNo='" + lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''") + "',Barcode_ID='" + lblBarcode.Text + txtbarcode.Text.Trim().Replace("'", "''") + "'," +
                 "Date_of_calibration='" + txtdateofcalib.Text.Trim().Replace("'", "''") + "',Calibration_Due_on='" + txtduedate.Text.Trim().Replace("'", "''") + "'," +
                 "ProductID='" + productidhidden.Value + "',PerfID='" + perfid_hidden.Value + "',ECM_ID='" + ecmidhidden.Value + "',Tracibility_ID='" + lblValues.Text + "'," +
                 "ElectID='" + maxelectid.Value + "',HospitalID='" + ddhospitalname.SelectedValue + "',Remarks='" + txtremarks.Text.Trim().Replace("'", "''") + "' where Report_info_ID='" + editreport_hidden.Value + "'";

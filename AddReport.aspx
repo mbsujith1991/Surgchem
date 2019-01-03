@@ -173,6 +173,7 @@
             <tr>
                 <td><span style="color:red;">*</span>Report No:</td>
                 <td>
+                    <asp:Label ID="lblReportNo" runat="server" Text=""></asp:Label>
                     <asp:TextBox ID="txtreportno" runat="server" CssClass="hosp_class" ClientIDMode="Static" 
                        AutoPostBack="true" OnTextChanged="txtreportno_TextChanged"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtreportno" ForeColor="Red"
@@ -191,7 +192,8 @@
             <tr>
                 <td><span style="color:red;">*</span>Barcode ID</td>
 
-                <td><asp:TextBox ID="txtbarcode" runat="server" CssClass="hosp_class" ClientIDMode="Static"></asp:TextBox>
+                <td><asp:Label ID="lblBarcode" runat="server" Text=""></asp:Label>
+                    <asp:TextBox ID="txtbarcode" runat="server" CssClass="hosp_class" ClientIDMode="Static"></asp:TextBox>
                          <asp:RequiredFieldValidator ID="RequiredFieldValidator14" runat="server" Display="Dynamic" ForeColor="Red"
                              ErrorMessage="Barcode ID required" ValidationGroup="report" ControlToValidate="txtbarcode"/>
                     <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender1" TargetControlID="txtbarcode" ValidChars="/" FilterType="Numbers, Custom, UppercaseLetters, LowercaseLetters" runat="server" />
