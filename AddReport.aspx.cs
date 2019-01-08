@@ -79,7 +79,7 @@ public partial class AddReport : System.Web.UI.Page
                     perf_table.Visible = false;
                 }
                 multiviewreport.ActiveViewIndex = 1;
-                Bind_EditReportinfo();
+                Bind_EditReportinfo(1, 50);
                 btneditreport.Style.Add("background-color", "#195A7F");
                 btnaddreport.Style.Add("background-color", "#4892DB");
             }
@@ -573,77 +573,92 @@ public partial class AddReport : System.Web.UI.Page
 
     }
 
-    //Insert query to EditReport table
-
-
-
-    public void Bind_EditReportinfo()
+    public DataTable GetReportData(int startIndex, int maxRows)
     {
-        DataTable dt_result = new DataTable();
-        dt_result.Columns.Add("Report_info_ID", typeof(int));
-        dt_result.Columns.Add("ReportNo", typeof(string));
-        dt_result.Columns.Add("Date_of_calibration", typeof(string));
-        dt_result.Columns.Add("Calibration_Due_on", typeof(string));
-        dt_result.Columns.Add("HospitalName", typeof(string));
-        dt_result.Columns.Add("Temperature", typeof(string));
-        dt_result.Columns.Add("Relative_Humidity", typeof(string));
-        dt_result.Columns.Add("Ambient_Barometric_measure", typeof(string));
-        dt_result.Columns.Add("Productname", typeof(string));
-        //dt_result.Columns.Add("Model", typeof(string));
-        dt_result.Columns.Add("Serial_No", typeof(string));
-        dt_result.Columns.Add("Biomedical_ID", typeof(string));
-        string Hospname = "", Temp = "", Relative = "", Ambient = "", Product = "", slno = "", Biomedicalid = "";
-        db1.strCommand = "select  top 100 * from Report_Info order by Report_info_ID desc";
-        DataTable dt = db1.selecttable();
-        if (dt.Rows.Count > 0)
-        {
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                db1.strCommand = "select HospitalName from Hospital where HospitalID='" + dt.Rows[i]["HospitalID"].ToString() + "'";
-                DataTable dt_hospital = db1.selecttable();
-                if (dt_hospital.Rows.Count > 0)
-                {
-                    Hospname = dt_hospital.Rows[0]["HospitalName"].ToString();
-                }
-
-
-                db1.strCommand = "select Temperature,Relative_Humidity,Ambient_Barometric_measure from Environ_condition where ECM_ID='" + dt.Rows[i]["ECM_ID"].ToString() + "'";
-                DataTable dt_environ = db1.selecttable();
-                if (dt_environ.Rows.Count > 0)
-                {
-                    Temp = dt_environ.Rows[0]["Temperature"].ToString();
-                    Relative = dt_environ.Rows[0]["Relative_Humidity"].ToString();
-                    Ambient = dt_environ.Rows[0]["Ambient_Barometric_measure"].ToString();
-                }
-                else
-                {
-                    Populate_Environ();
-                }
-
-                db1.strCommand = "select ProductName from Product where ProductID='" + dt.Rows[i]["ProductID"].ToString() + "'";
-                DataTable dt_product = db1.selecttable();
-                if (dt_product.Rows.Count > 0)
-                {
-                    Product = dt_product.Rows[0]["ProductName"].ToString();
-                }
-
-                db1.strCommand = "select Serial_No,Biomedical_ID from DUT_info where Report_info_ID='" + dt.Rows[i]["Report_info_ID"].ToString() + "'";
-                DataTable dt_dut = db1.selecttable();
-                if (dt_dut.Rows.Count > 0)
-                {
-                    slno = dt_dut.Rows[0]["Serial_No"].ToString();
-                    Biomedicalid = dt_dut.Rows[0]["Biomedical_ID"].ToString();
-                }
-
-                dt_result.Rows.Add(dt.Rows[i]["Report_info_ID"].ToString(), dt.Rows[i]["ReportNo"].ToString(), dt.Rows[i]["Date_of_calibration"].ToString(), dt.Rows[i]["Calibration_Due_on"].ToString(),
-                    Hospname, Temp, Relative, Ambient, Product, slno, Biomedicalid);
-
-            }
-            GridView1.DataSource = dt_result;
-            GridView1.DataBind();
-        }
+        db1.strCommand =
+                "WITH ReportData AS \n" +
+                "( \n" +
+                "select report.Report_info_ID, report.ReportNo,report.Date_of_Calibration,report.Calibration_Due_on,hospital.HospitalName,\n" +
+                "ecm.Temperature,ecm.Ambient_Barometric_measure, ecm.Relative_Humidity, dut.Biomedical_ID, dut.Serial_No,\n" +
+                "product.ProductName,ROW_NUMBER() OVER(ORDER BY report.Report_info_ID desc) AS RowRank from Report_Info report \n" +
+                "inner join Hospital hospital on report.HospitalID = hospital.HospitalID \n" +
+                "inner join Environ_condition ecm on report.ECM_ID = ecm.ECM_ID \n" +
+                "inner join DUT_info dut on report.Report_info_ID = dut.Report_info_ID \n" +
+                "inner join Product product on report.ProductID = product.ProductID \n" +
+                ") \n" +
+                "select Report_info_ID,ReportNo, Date_of_Calibration, Calibration_Due_on, HospitalName, Temperature,\n" +
+                "Ambient_Barometric_measure, Relative_Humidity, Biomedical_ID, Serial_No, ProductName,\n" +
+                "RowRank from ReportData \n" +
+                "WHERE RowRank BETWEEN(" + startIndex + " - 1) * " + maxRows + "+" + "1 AND(((" + startIndex + " - 1) * " + maxRows + " + 1) + " + maxRows + ") - 1";
+        var reportData = db1.selecttable();
+        return reportData;
     }
 
+    public int TotalReportCount()
+    {
+        db1.strCommand = "Select Count(*) From Report_Info";
+        var result = db1.executescalar();
+        int totalCount = 0;
+        if (!string.IsNullOrEmpty(result))
+        {
+            totalCount = Convert.ToInt32(result);
+        }
+        return totalCount;
+    }
+
+    private void PopulatePager(int recordCount, int currentPage, int maxRows)
+    {
+        double dblPageCount = (double)((decimal)recordCount / maxRows);
+        int pageCount = (int)Math.Ceiling(dblPageCount);
+        List<ListItem> pages = new List<ListItem>();
+        if (pageCount > 0)
+        {
+            int showMax = 10;
+            int startPage;
+            int endPage;
+            if (pageCount <= showMax)
+            {
+                startPage = 1;
+                endPage = pageCount;
+            }
+            else
+            {
+                startPage = currentPage;
+                endPage = currentPage + showMax - 1;
+            }
+
+            pages.Add(new ListItem("First", "1", currentPage > 1));
+
+            for (int i = startPage; i <= endPage; i++)
+            {
+                pages.Add(new ListItem(i.ToString(), i.ToString(), i != currentPage));
+            }
+
+            pages.Add(new ListItem("Last", pageCount.ToString(), currentPage < pageCount));
+        }
+        rptPager.DataSource = pages;
+        rptPager.DataBind();
+    }
+
+    public void Bind_EditReportinfo(int pageIndex, int maxRows)
+    {
+        var reportData = GetReportData(pageIndex, maxRows);
+        if (reportData == null)
+        {
+            reportData = new DataTable();
+        }
+        rptPager.Visible = true;
+        GridView1.DataSource = reportData;
+        GridView1.DataBind();
+        int totalReportResult = TotalReportCount();
+        this.PopulatePager(totalReportResult, pageIndex, maxRows);
+    }
+
+    protected void Page_Changed(object sender, EventArgs e)
+    {
+        int pageIndex = int.Parse((sender as LinkButton).CommandArgument);
+        Bind_EditReportinfo(pageIndex, 50);
+    }
 
     //Insert query for Report_Info table
     public void InsertReportinfo()
@@ -1908,7 +1923,8 @@ public partial class AddReport : System.Web.UI.Page
     protected void btneditreport_Click(object sender, EventArgs e)
     {
         multiviewreport.ActiveViewIndex = 1;
-        Bind_EditReportinfo();
+        int pageIndex = 1, maxRows = 50;
+        Bind_EditReportinfo(pageIndex, maxRows);
         btneditreport.Style.Add("background-color", "#195A7F");
         btnaddreport.Style.Add("background-color", "#4892DB");
     }
@@ -2193,13 +2209,7 @@ public partial class AddReport : System.Web.UI.Page
             "where Report_info_ID='" + editreport_hidden.Value + "'";
         db1.insertqry();
     }
-
-
-    protected void GridView1_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        GridView1.PageIndex = e.NewPageIndex;
-        Bind_EditReportinfo();
-    }
+    
     protected void btnSearchreport_Click(object sender, EventArgs e)
     {
 
@@ -2228,8 +2238,9 @@ public partial class AddReport : System.Web.UI.Page
                 GridView1.DataBind();
                 txtSearchString1.Text = "";
             }
+            rptPager.Visible = false;
         }
-        if (txtsearchcompany.Text != "")
+        else if (txtsearchcompany.Text != "")
         {
 
 
@@ -2254,6 +2265,11 @@ public partial class AddReport : System.Web.UI.Page
                 GridView1.DataBind();
                 txtsearchcompany.Text = "";
             }
+            rptPager.Visible = false;
+        }
+        else if (string.IsNullOrEmpty(txtsearchcompany.Text.Trim()) && string.IsNullOrEmpty(txtSearchString1.Text.Trim()))
+        {
+            Bind_EditReportinfo(1, 50);
         }
 
     }
