@@ -30,25 +30,6 @@ public partial class AddReport : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-
-        //if (Request.IsAuthenticated && Session["Usertype"]!=null)
-        //{
-        //    utypeid_hidden.Value = Session["Usertype"].ToString();
-        //    if (utypeid_hidden.Value == null)
-        //    {
-        //        Response.Redirect("Default.aspx");
-        //    }
-        //    else
-        //    {
-        //        //cut the old code and paste below
-
-        //    }
-
-        //}
-        //else
-        //{
-        //    Response.Redirect("Default.aspx");
-        //
         object usertypeObj = Session["Usertype"];
         if (usertypeObj != null)
         {
