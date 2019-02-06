@@ -458,6 +458,7 @@ public partial class EditReport : System.Web.UI.Page
         View_RPMMeasurement_4_28_18.showdiv_tr();
         View_PressureAutoclave132.showdiv_tr();
         View_Perf_micropipetteNew.showdiv_tr();
+        View_Perf_micropipette2019.showdiv_tr();
     }
 
     public void Hideperftable()
@@ -526,6 +527,7 @@ public partial class EditReport : System.Web.UI.Page
         View_RPMMeasurement_4_28_18.Hide_perftable();
         View_PressureAutoclave132.Hide_perftable();
         View_Perf_micropipetteNew.Hide_perftable();
+        View_Perf_micropipette2019.Hide_perftable();
     }
 
     public void Populate_perftable()
@@ -1090,12 +1092,22 @@ public partial class EditReport : System.Web.UI.Page
             //Pressure Measurement of Autoclave 132 ends
 
             //Micro Pipette New starts
-            if (performanceid[i].ToString() == "61")
+            if (performanceid[i].ToString() == "62")
             {
                 string sReportid = reportid_hidden.Value;
                 string sPerfid = performanceid[i].ToString();
 
                 View_Perf_micropipetteNew.Bind_MicroPipetteData(sReportid, sPerfid);
+            }
+            //Micro Pipette New ends
+
+            //Micro Pipette New starts
+            if (performanceid[i].ToString() == "63")
+            {
+                string sReportid = reportid_hidden.Value;
+                string sPerfid = performanceid[i].ToString();
+
+                View_Perf_micropipette2019.Bind_MicroPipetteData(sReportid, sPerfid);
             }
             //Micro Pipette New ends
         }

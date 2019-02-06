@@ -69,6 +69,8 @@
 <%@ Register Src="~/controls/RPMMeasurement_4_28_18.ascx" TagPrefix="uc1" TagName="RPMMeasurement_4_28_18" %>
 <%@ Register Src="~/controls/PressureMeasurementForAutoclave132.ascx" TagPrefix="uc1" TagName="PressureMeasurementForAutoclave132" %>
 <%@ Register Src="~/controls/Perfanalysis_micropipetteNew.ascx" TagPrefix="uc1" TagName="Perfanalysis_micropipetteNew" %>
+<%@ Register Src="~/controls/Perfanalysis_micropipette2019.ascx" TagPrefix="uc1" TagName="Perfanalysis_micropipette2019" %>
+
 
 
 <%--<%@ Register Src="~/controls/Fio2test_New.ascx" TagPrefix="uc1" TagName="Fio2test_New" %>--%>
@@ -738,6 +740,9 @@
                                         </asp:View>
                                         <asp:View ID="View63" runat="server">
                                             <uc1:Perfanalysis_micropipetteNew runat="server" ID="Perfanalysis_micropipetteNew" />
+                                        </asp:View>
+                                        <asp:View ID="View64" runat="server">
+                                            <uc1:Perfanalysis_micropipette2019 runat="server" ID="Perfanalysis_micropipette2019" />
                                         </asp:View>
                                     </asp:MultiView>
 

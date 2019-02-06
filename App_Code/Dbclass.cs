@@ -5,6 +5,7 @@ using System.Web;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Web.UI.WebControls;
 
 /// <summary>
 /// Summary description for Dbclass
@@ -201,5 +202,38 @@ public class Dbclass
             return null;
         }
 
+    }
+
+    public List<ListItem> PopulatePager(int recordCount, int currentPage, int maxRows)
+    {
+        double dblPageCount = (double)((decimal)recordCount / maxRows);
+        int pageCount = (int)Math.Ceiling(dblPageCount);
+        List<ListItem> pages = new List<ListItem>();
+        if (pageCount > 0)
+        {
+            int showMax = 10;
+            int startPage;
+            int endPage;
+            if (pageCount <= showMax)
+            {
+                startPage = 1;
+                endPage = pageCount;
+            }
+            else
+            {
+                startPage = currentPage;
+                endPage = currentPage + showMax - 1;
+            }
+
+            pages.Add(new ListItem("First", "1", currentPage > 1));
+
+            for (int i = startPage; i <= endPage; i++)
+            {
+                pages.Add(new ListItem(i.ToString(), i.ToString(), i != currentPage));
+            }
+
+            pages.Add(new ListItem("Last", pageCount.ToString(), currentPage < pageCount));
+        }
+        return pages;
     }
 }

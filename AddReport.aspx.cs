@@ -587,40 +587,6 @@ public partial class AddReport : System.Web.UI.Page
         return totalCount;
     }
 
-    private void PopulatePager(int recordCount, int currentPage, int maxRows)
-    {
-        double dblPageCount = (double)((decimal)recordCount / maxRows);
-        int pageCount = (int)Math.Ceiling(dblPageCount);
-        List<ListItem> pages = new List<ListItem>();
-        if (pageCount > 0)
-        {
-            int showMax = 10;
-            int startPage;
-            int endPage;
-            if (pageCount <= showMax)
-            {
-                startPage = 1;
-                endPage = pageCount;
-            }
-            else
-            {
-                startPage = currentPage;
-                endPage = currentPage + showMax - 1;
-            }
-
-            pages.Add(new ListItem("First", "1", currentPage > 1));
-
-            for (int i = startPage; i <= endPage; i++)
-            {
-                pages.Add(new ListItem(i.ToString(), i.ToString(), i != currentPage));
-            }
-
-            pages.Add(new ListItem("Last", pageCount.ToString(), currentPage < pageCount));
-        }
-        rptPager.DataSource = pages;
-        rptPager.DataBind();
-    }
-
     public void Bind_EditReportinfo(int pageIndex, int maxRows)
     {
         var reportData = GetReportData(pageIndex, maxRows);
@@ -632,7 +598,8 @@ public partial class AddReport : System.Web.UI.Page
         GridView1.DataSource = reportData;
         GridView1.DataBind();
         int totalReportResult = TotalReportCount();
-        this.PopulatePager(totalReportResult, pageIndex, maxRows);
+        rptPager.DataSource = db1.PopulatePager(totalReportResult, pageIndex, maxRows);
+        rptPager.DataBind();
     }
 
     protected void Page_Changed(object sender, EventArgs e)
@@ -1839,6 +1806,14 @@ public partial class AddReport : System.Web.UI.Page
             Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
             perfmulti.ActiveViewIndex = 62;
         }
+        if (ddlperformance.SelectedValue == "63")
+        {
+            Session["performancename63"] = ddlperformance.SelectedItem.Text;
+            Session["perfid63"] = ddlperformance.SelectedValue;
+            Session["Editreportid63"] = editreport_hidden.Value;
+            Session["ReportNo"] = lblReportNo.Text + txtreportno.Text.Trim().Replace("'", "''");
+            perfmulti.ActiveViewIndex = 63;
+        }
         //ddlperformance.Focus();
         txtremarks.Focus();
     }
@@ -1856,7 +1831,7 @@ public partial class AddReport : System.Web.UI.Page
     }
     protected void txtdateofcalib_TextChanged(object sender, EventArgs e)
     {
-        Session["calibdate"] = txtdateofcalib.Text;
+        Session["calibdate"] = txtdateofcalib.Text??string.Empty;
         // DateTime year = Convert.ToDateTime(txtdateofcalib.Text).AddDays(364);
         DateTime year = Convert.ToDateTime(txtdateofcalib.Text, System.Globalization.CultureInfo.GetCultureInfo("hi-IN").DateTimeFormat).AddDays(364);
         txtduedate.Text = (year.Date).ToString("dd/MM/yyyy");
@@ -1865,7 +1840,7 @@ public partial class AddReport : System.Web.UI.Page
     }
     protected void ddlmanuf_SelectedIndexChanged(object sender, EventArgs e)
     {
-        txtmanu.Text = ddlmanuf.SelectedItem.Text;
+        txtmanu.Text = ddlmanuf.SelectedItem.Text??string.Empty;
         BindModel();
         //btnsavereport.Focus();
         //ddlmodel.Focus();
@@ -1877,13 +1852,11 @@ public partial class AddReport : System.Web.UI.Page
         BindDeviceType();
         BindDeviceClassi();
         Bind_Supply_Power();
-        txtmodel.Text = ddlmodel.SelectedItem.Text;
+        txtmodel.Text = ddlmodel.SelectedItem.Text??string.Empty;
         txtdevtype.Text = ddlevicetype.SelectedItem.Text;
-        txtdevclassification.Text = ddldeviceclass.SelectedItem.Text;
-        txtsupplydata.Text = txtsupply.Text.Trim();
-        txtpowerdate.Text = txtpower.Text.Trim();
-        //ddlevicetype.Focus();
-        //btnsavereport.Focus();
+        txtdevclassification.Text = ddldeviceclass.SelectedItem.Text??string.Empty;
+        txtsupplydata.Text = txtsupply.Text.Trim()??string.Empty;
+        txtpowerdate.Text = txtpower.Text.Trim()??string.Empty;
         ddlcondition.Focus();
     }
     protected void ch_perf_CheckedChanged(object sender, EventArgs e)
@@ -2190,7 +2163,7 @@ public partial class AddReport : System.Web.UI.Page
             "where Report_info_ID='" + editreport_hidden.Value + "'";
         db1.insertqry();
     }
-    
+
     protected void btnSearchreport_Click(object sender, EventArgs e)
     {
 
@@ -2201,8 +2174,8 @@ public partial class AddReport : System.Web.UI.Page
                               "hp.HospitalName,ec.Temperature,ec.Relative_Humidity," +
                                "ec.Ambient_Barometric_measure,p.ProductName,di.Serial_No,di.Biomedical_ID " +
                                 "from Report_Info ri join Hospital hp on ri.HospitalID=hp.HospitalID join Environ_condition ec " +
-                                "on ri.ECM_ID=ec.ECM_ID join Product p on ri.ProductID=p.ProductID " +
-                                "join DUT_info di on ri.Report_info_ID=di.Report_info_ID " +
+                                "on ri.ECM_ID=ec.ECM_ID left join Product p on ri.ProductID=p.ProductID " +
+                                "left join DUT_info di on ri.Report_info_ID=di.Report_info_ID " +
                                 "where ri.ReportNo='" + txtSearchString1.Text.Trim() + "'";
             DataTable dt = db1.selecttable();
 

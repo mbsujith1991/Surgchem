@@ -21,14 +21,14 @@ using System.Collections.Generic;
 public partial class Add_Product : System.Web.UI.Page
 {
     Dbclass db1 = new Dbclass();
-    
+
     public string listFilter = null;
-   
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Request.IsAuthenticated && Session["Usertype"] != null)
         {
-            
+
             utypeid_hidden.Value = Session["Usertype"].ToString();
             if (utypeid_hidden.Value == null)
             {
@@ -40,7 +40,7 @@ public partial class Add_Product : System.Web.UI.Page
                 {
                     HtmlGenericControl listproduct = (HtmlGenericControl)this.Master.FindControl("liproduct");
                     listproduct.Style.Add("background-color", "#195A7F");
-                    GridProductBind();
+                    GridProductBind(1, 50);
                 }
             }
         }
@@ -48,7 +48,7 @@ public partial class Add_Product : System.Web.UI.Page
         {
             Response.Redirect("Default.aspx");
         }
-        
+
     }
 
 
@@ -251,19 +251,21 @@ public partial class Add_Product : System.Web.UI.Page
         }
     }
 
-    public void GridProductBind()
+    public void GridProductBind(int startIndex, int maxRows)
     {
-        db1.strCommand = "select * from Product  order by ProductName Asc";
-        DataSet ds = db1.selectqry();
-        if (ds.Tables[0].Rows.Count > 0)
+        db1.strCommand = "With ProductData As \n" +
+                        "(\n" +
+                            "select *, ROW_NUMBER() OVER(ORDER BY ProductID desc) AS RowRank from Product \n" +
+                        ")" +
+                        "select * from ProductData \n" +
+                        "where ProductName != '' and RowRank BETWEEN(" + startIndex + " - 1) * " + maxRows + "+" + "1 AND(((" + startIndex + " - 1) * " + maxRows + " + 1) + " + maxRows + ") - 1 \n" +
+                        "order by ProductName Asc";
+        DataTable productTable = db1.selecttable();
+        if (productTable == null)
         {
-            GridView1.DataSource = ds;
-            GridView1.DataBind();
-        }
-        else
-        {
-            ds.Tables[0].Rows.Add(ds.Tables[0].NewRow());
-            GridView1.DataSource = ds;
+            productTable = new DataTable();
+            productTable.Rows.Add(productTable.NewRow());
+            GridView1.DataSource = productTable;
             GridView1.DataBind();
             int columncount = GridView1.Rows[0].Cells.Count;
             GridView1.Rows[0].Cells.Clear();
@@ -271,102 +273,45 @@ public partial class Add_Product : System.Web.UI.Page
             GridView1.Rows[0].Cells[0].ColumnSpan = columncount;
             GridView1.Rows[0].Cells[0].Text = "No Records Found";
         }
+        else
+        {
+            rptPager.Visible = true;
+            GridView1.DataSource = productTable;
+            GridView1.DataBind();
+            int totalReportResult = TotalProductCount();
+            rptPager.DataSource = db1.PopulatePager(totalReportResult, startIndex, maxRows);
+            rptPager.DataBind();
+        }
     }
+
+    /// <summary>
+    /// Page change event for repeater
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void Page_Changed(object sender, EventArgs e)
+    {
+        int pageIndex = int.Parse((sender as LinkButton).CommandArgument);
+        GridProductBind(pageIndex, 50);
+    }
+
+    public int TotalProductCount()
+    {
+        db1.strCommand = "Select Count(*) From Product Where ProductName!='' ";
+        var result = db1.executescalar();
+        int totalCount = 0;
+        if (!string.IsNullOrEmpty(result))
+        {
+            totalCount = Convert.ToInt32(result);
+        }
+        return totalCount;
+    }
+
     protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
         GridView1.EditIndex = -1;
-        GridProductBind();
+        GridProductBind(1, 50);
     }
-    //protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
-    //{
-    //    GridView1.EditIndex = e.NewEditIndex;
-    //    GridProductBind();
-    //}
-    //protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
-    //{
-    //    if (e.CommandName.Equals("AddNew"))
-    //    {
-    //        TextBox txtproductfooter = (TextBox)GridView1.FooterRow.FindControl("txtproductfooter");
-    //        TextBox txtmanufacturefooter = (TextBox)GridView1.FooterRow.FindControl("txtmanufacturefooter");
-    //        TextBox txtmodelfooter = (TextBox)GridView1.FooterRow.FindControl("txtmodelfooter");
-    //        TextBox txtdevtypefooter = (TextBox)GridView1.FooterRow.FindControl("txtdevtypefooter");
-    //        TextBox txtdevclassifooter = (TextBox)GridView1.FooterRow.FindControl("txtdevclassifooter");
-    //        TextBox txtsupplyfooter = (TextBox)GridView1.FooterRow.FindControl("txtsupplyfooter");
-    //        TextBox txtpowerfooter = (TextBox)GridView1.FooterRow.FindControl("txtpowerfooter");
-
-    //        db1.strCommand = "insert into Product(ProductName,Company,Model,Device_Type,Device_Classification,Supply,PowerRating)values " +
-    //            "('" + txtproductfooter.Text.Trim() + "','" + txtmanufacturefooter.Text + "','" + txtmodelfooter.Text + "'," +
-    //            "'" + txtdevtypefooter.Text.Trim() + "','" + txtdevclassifooter.Text.Trim() + "','" + txtsupplyfooter.Text.Trim() + "','" + txtpowerfooter.Text.Trim() + "')";
-    //        db1.insertqry();
-    //        GridProductBind();
-    //        lblresult.ForeColor = Color.Green;
-    //        lblresult.Text = " Details inserted successfully";
-    //    }
-    //    //else
-    //    //{
-    //    //    lblresult.ForeColor = Color.Red;
-    //    //    lblresult.Text = " Details not inserted"; 
-    //    //}
-    //}
-    //protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
-    //{
-    //    productidhidden.Value = (GridView1.DataKeys[e.RowIndex].Values["ProductID"].ToString());
-
-    //    db1.strCommand = "delete  from Product where ProductID='" + productidhidden.Value + "'";
-    //    db1.insertqry();
-
-    //    GridProductBind();
-
-    //}
-    protected void GridView1_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        GridView1.PageIndex = e.NewPageIndex;
-        GridProductBind();
-    }
-    //protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-    //{
-    //    int prodid = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value.ToString());
-    //    //string username = GridView1.DataKeys[e.RowIndex].Values["UserName"].ToString();
-    //    TextBox txtproductname = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtproduct");
-    //    TextBox txtmanufacture = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtmanufacture");
-    //    TextBox txtmodel = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtmodel");
-    //    TextBox txtdevtype = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtdevtype");
-    //    TextBox txtdevclassi = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtdevclassi");
-    //    TextBox txtsupply = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtsupply");
-    //    TextBox txtpower = (TextBox)GridView1.Rows[e.RowIndex].FindControl("txtpower");
-
-    //    db1.strCommand = "update Product set ProductName='" + txtproductname.Text.Trim() + "',Company='" + txtmanufacture.Text.Trim() + "'," +
-    //        "Model='" + txtmodel.Text.Trim() + "',Device_Type='" + txtdevtype.Text.Trim() + "',Device_Classification='" + txtdevclassi.Text.Trim() + "'," +
-    //        "Supply='" + txtsupply.Text.Trim() + "',PowerRating='" + txtpower.Text.Trim() + "' where ProductID=" + prodid;
-
-    //    db1.insertqry();
-
-    //    lblresult.ForeColor = Color.Green;
-    //    lblresult.Text = " Details Updated successfully";
-    //    GridView1.EditIndex = -1;
-    //    GridProductBind();
-    //}
-
-    //protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
-    //{
-    //    if (e.Row.RowType == DataControlRowType.DataRow)
-    //    {
-    //        //getting username from particular row
-    //        string prodname = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "ProductName"));
-    //        //identifying the control in gridview
-    //        ImageButton lnkbtnresult = (ImageButton)e.Row.FindControl("imgbtnDelete");
-    //        //raising javascript confirmationbox whenver user clicks on link button
-    //        if (lnkbtnresult != null)
-    //        {
-    //            lnkbtnresult.Attributes.Add("onclick", "javascript:return ConfirmationBox('" + prodname + "')");
-    //        }
-
-    //    }
-    //}
-    //protected void imgadd_Click(object sender, ImageClickEventArgs e)
-    //{
-
-    //}
 
 
     protected void btnaddpro_Click(object sender, EventArgs e)
@@ -391,14 +336,23 @@ public partial class Add_Product : System.Web.UI.Page
     }
     protected void btnsearchproduct_Click(object sender, EventArgs e)
     {
-        db1.strCommand = "select * from Product where ProductName like '" + txtSearchString1.Text.Trim() + "%'";
-        DataSet ds = db1.selectqry();
-        if (ds.Tables[0].Rows.Count > 0)
+        if (!string.IsNullOrEmpty(txtSearchString1.Text.Trim()))
         {
-            GridView1.DataSource = ds;
-            GridView1.DataBind();
+            db1.strCommand = "select * from Product where ProductName like '" + txtSearchString1.Text.Trim() + "%'";
+            DataSet ds = db1.selectqry();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                GridView1.DataSource = ds;
+                GridView1.DataBind();
+            }
+            txtSearchString1.Text = "";
+            rptPager.Visible = false;
         }
-        txtSearchString1.Text = "";
+        else
+        {
+            GridProductBind(1, 50);
+        }
+
     }
     protected void btncancel_Click(object sender, EventArgs e)
     {
@@ -406,26 +360,26 @@ public partial class Add_Product : System.Web.UI.Page
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
-       
+
         if (btnsave.Text == "Save")
         {
             db1.strCommand = "select Model from Product where ProductName like '" + txtproname.Text.Trim() + "' and " +
            "Company like '" + txtmanu.Text.Trim() + "' and Model like '" + txtmodel.Text.Trim() + "'";
-        DataTable dt = db1.selecttable();
-        if (dt.Rows.Count <= 0)
-        {
-            db1.strCommand = "insert into Product(ProductName,Company,Model,Device_Type,Device_Classification,Supply,PowerRating)values " +
-                    "('" + txtproname.Text.Trim().Replace("'", "''") + "','" + txtmanu.Text.Trim().Replace("'", "''") + "','" + txtmodel.Text.Trim().Replace("'", "''") + "'," +
-                    "'" + txtdevtype.Text.Trim().Replace("'", "''") + "','" + txtdevclassification.Text.Trim().Replace("'", "''") + "','" + txtsupplydata.Text.Trim().Replace("'", "''") + "'," +
-            "'" + txtpower.Text.Trim().Replace("'", "''") + "')";
-            db1.insertqry();
-            GridProductBind();
-            clearfield();
-        }
-        else
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('Model Name already exists !');", true);
-        }
+            DataTable dt = db1.selecttable();
+            if (dt.Rows.Count <= 0)
+            {
+                db1.strCommand = "insert into Product(ProductName,Company,Model,Device_Type,Device_Classification,Supply,PowerRating)values " +
+                        "('" + txtproname.Text.Trim().Replace("'", "''") + "','" + txtmanu.Text.Trim().Replace("'", "''") + "','" + txtmodel.Text.Trim().Replace("'", "''") + "'," +
+                        "'" + txtdevtype.Text.Trim().Replace("'", "''") + "','" + txtdevclassification.Text.Trim().Replace("'", "''") + "','" + txtsupplydata.Text.Trim().Replace("'", "''") + "'," +
+                "'" + txtpower.Text.Trim().Replace("'", "''") + "')";
+                db1.insertqry();
+                GridProductBind(1, 50);
+                clearfield();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('Model Name already exists !');", true);
+            }
         }
 
         else if (btnsave.Text == "Update")
@@ -436,7 +390,7 @@ public partial class Add_Product : System.Web.UI.Page
                 "Supply='" + txtsupplydata.Text.Trim().Replace("'", "''") + "',PowerRating='" + txtpower.Text.Trim().Replace("'", "''") + "'" +
                 " where ProductID='" + productidhidden.Value + "'";
             db1.insertqry();
-            GridProductBind();
+            GridProductBind(1, 50);
             btnsave.Text = "Save";
             clearfield();
         }
@@ -481,6 +435,6 @@ public partial class Add_Product : System.Web.UI.Page
         productidhidden.Value = (GridView1.DataKeys[e.RowIndex].Values["ProductID"].ToString());
         db1.strCommand = "Delete from Product where ProductID='" + productidhidden.Value + "'";
         db1.insertqry();
-        GridProductBind();
+        GridProductBind(1, 50);
     }
 }

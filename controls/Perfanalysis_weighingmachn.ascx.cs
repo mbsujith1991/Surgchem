@@ -267,7 +267,7 @@ public partial class controls_Perfanalysis_weighingmachn : System.Web.UI.UserCon
                                txtdut5.Text.Trim().Replace("'", "''") + "," + txtvaldut5.Text.Trim().Replace("'", "''") + "," +
                                txtspec5.Text.Trim().Replace("'", "''") + "," + txtrem5.Text.Trim().Replace("'", "''");
 
-                            db1.strCommand = "insert into Performance_Values(PerfID,Perf_Valu,ReportNoe) values('" + Session["Perfid24"].ToString() + "','" + perf_weighmachn_hidden.Value + "','" + Session["ReportNo"].ToString() + "')";
+                            db1.strCommand = "insert into Performance_Values(PerfID,Perf_Value,ReportNo) values('" + Session["Perfid24"].ToString() + "','" + perf_weighmachn_hidden.Value + "','" + Session["ReportNo"].ToString() + "')";
                             db1.insertqry();
                         }
                         if (i == 5)
