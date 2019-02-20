@@ -190,62 +190,49 @@ public partial class EditReport : System.Web.UI.Page
     {
         db1.strCommand = "select Condition_of_item from DUT_info where Report_info_ID=" + reportid_hidden.Value;
         DataTable dt = db1.selecttable();
-        SqlDataReader dr = db1.dataread();
-        if (dr.HasRows)
+        if (dt.Rows.Count>0)
         {
-            while (dr.Read())
-            {
-                lblconditionofitem.Text = dr["Condition_of_item"].ToString();
-            }
+            lblconditionofitem.Text = dt.Rows[0]["Condition_of_item"].ToString();            
         }
     }
     public void Populate_productinfo()
     {
         db1.strCommand = "select * from Product where ProductID='" + productidhidden.Value + "'";
-        SqlDataReader dr = db1.dataread();
-        if (dr.HasRows)
+        DataTable dt = db1.selecttable();
+        if (dt.Rows.Count>0)
         {
-            while (dr.Read())
-            {
-                lblnomenclature.Text = dr["ProductName"].ToString().ToUpper(); ;
-                lblmanufacture.Text = dr["Company"].ToString();
-                lblmodel.Text = dr["Model"].ToString();
-                lbltype.Text = dr["Device_Type"].ToString();
-                lblclassification.Text = dr["Device_Classification"].ToString();
-                lblsupply.Text = dr["Supply"].ToString();
-                lblpowerrating.Text = dr["PowerRating"].ToString();
-                lblproductname.Text = dr["ProductName"].ToString().ToUpper();
-                lblproductname1.Text = dr["ProductName"].ToString().ToUpper();
-            }
+            lblnomenclature.Text = dt.Rows[0]["ProductName"].ToString().ToUpper(); ;
+            lblmanufacture.Text = dt.Rows[0]["Company"].ToString();
+            lblmodel.Text = dt.Rows[0]["Model"].ToString();
+            lbltype.Text = dt.Rows[0]["Device_Type"].ToString();
+            lblclassification.Text = dt.Rows[0]["Device_Classification"].ToString();
+            lblsupply.Text = dt.Rows[0]["Supply"].ToString();
+            lblpowerrating.Text = dt.Rows[0]["PowerRating"].ToString();
+            lblproductname.Text = dt.Rows[0]["ProductName"].ToString().ToUpper();
+            lblproductname1.Text = dt.Rows[0]["ProductName"].ToString().ToUpper();            
         }
     }
     public void Populate_DUTinfo()
     {
         db1.strCommand = "select * from DUT_info where Report_info_ID='" + reportid_hidden.Value + "'";
-        SqlDataReader dr = db1.dataread();
-        if (dr.HasRows)
+        DataTable dt = db1.selecttable();
+        if (dt.Rows.Count > 0)
         {
-            while (dr.Read())
-            {
-                lblserialno.Text = dr["Serial_No"].ToString();
-                lblbiomedicalID.Text = dr["Biomedical_ID"].ToString();
-                lblconditionofitem.Text = dr["Condition_of_item"].ToString();
-                lbllocation.Text = dr["Location"].ToString();
-            }
+            lblserialno.Text = dt.Rows[0]["Serial_No"].ToString();
+            lblbiomedicalID.Text = dt.Rows[0]["Biomedical_ID"].ToString();
+            lblconditionofitem.Text = dt.Rows[0]["Condition_of_item"].ToString();
+            lbllocation.Text = dt.Rows[0]["Location"].ToString();
         }
     }
     public void Bind_Environ()
     {
         db1.strCommand = "select * from Environ_condition where ECM_ID='" + Ecm_hidden.Value + "'";
-        SqlDataReader dr = db1.dataread();
-        if (dr.HasRows)
+        DataTable dt = db1.selecttable();
+        if (dt.Rows.Count > 0)
         {
-            while (dr.Read())
-            {
-                lbltemperature.Text = dr["Temperature"].ToString();
-                lblhumidity.Text = dr["Relative_Humidity"].ToString();
-                lblambient.Text = dr["Ambient_Barometric_measure"].ToString();
-            }
+            lbltemperature.Text = dt.Rows[0]["Temperature"].ToString();
+            lblhumidity.Text = dt.Rows[0]["Relative_Humidity"].ToString();
+            lblambient.Text = dt.Rows[0]["Ambient_Barometric_measure"].ToString();
         }
     }
     public void Bind_Traceability()
@@ -303,74 +290,71 @@ public partial class EditReport : System.Web.UI.Page
     public void Bind_Calib()
     {
         db1.strCommand = "select * from Calibration_Status where Report_info_ID='" + reportid_hidden.Value + "'";
-        SqlDataReader dr = db1.dataread();
-        if (dr.HasRows)
+        DataTable dt = db1.selecttable();
+        if (dt.Rows.Count>0)
         {
-            while (dr.Read())
+            if (Convert.ToInt32(dt.Rows[0]["Manu_Specifi"]) == 1)
             {
-                if (Convert.ToInt32(dr["Manu_Specifi"]) == 1)
-                {
-                    //lblmanspec.Text = "yes";
-                    Image1.Visible = true;
-                }
-                else
-                {
-                    lblmanspec.Text = "-";
-                }
-                if (Convert.ToInt32(dr["User_Specifi"]) == 1)
-                {
-                    //lbluserspec.Text = "yes";
-                    Image2.Visible = true;
-                }
-                else
-                {
-                    lbluserspec.Text = "-";
-                }
-                if (Convert.ToInt32(dr["within_specifi"]) == 1)
-                {
-                    //lblwithinspec.Text = "yes";
-                    Image3.Visible = true;
-                }
-                else
-                {
-                    lblwithinspec.Text = "-";
-                }
-                if (Convert.ToInt32(dr["outof_specifi"]) == 1)
-                {
-                    //lbloutofspec.Text = "yes";
-                    Image4.Visible = true;
-                }
-                else
-                {
-                    lbloutofspec.Text = "-";
-                }
-                if (Convert.ToInt32(dr["calibration"]) == 1)
-                {
-                    //lblcalib.Text = "yes";
-                    Image5.Visible = true;
-                }
-                else
-                {
-                    lblcalib.Text = "-";
-                }
-                if (Convert.ToInt32(dr["Electrical_safety"]) == 1)
-                {
-                    //lblelctrical.Text = "yes";
-                    Image6.Visible = true;
-                }
-                else
-                {
-                    lblelctrical.Text = "-";
-                }
-                if (Convert.ToInt32(dr["Performance_analysis"]) == 1)
-                {
-                    //lblperformance.Text = "yes";
-                    Image7.Visible = true;
-                }
-                else
-                {
-                    lblperformance.Text = "-";
-                }
+                //lblmanspec.Text = "yes";
+                Image1.Visible = true;
+            }
+            else
+            {
+                lblmanspec.Text = "-";
+            }
+            if (Convert.ToInt32(dt.Rows[0]["User_Specifi"]) == 1)
+            {
+                //lbluserspec.Text = "yes";
+                Image2.Visible = true;
+            }
+            else
+            {
+                lbluserspec.Text = "-";
+            }
+            if (Convert.ToInt32(dt.Rows[0]["within_specifi"]) == 1)
+            {
+                //lblwithinspec.Text = "yes";
+                Image3.Visible = true;
+            }
+            else
+            {
+                lblwithinspec.Text = "-";
+            }
+            if (Convert.ToInt32(dt.Rows[0]["outof_specifi"]) == 1)
+            {
+                //lbloutofspec.Text = "yes";
+                Image4.Visible = true;
+            }
+            else
+            {
+                lbloutofspec.Text = "-";
+            }
+            if (Convert.ToInt32(dt.Rows[0]["calibration"]) == 1)
+            {
+                //lblcalib.Text = "yes";
+                Image5.Visible = true;
+            }
+            else
+            {
+                lblcalib.Text = "-";
+            }
+            if (Convert.ToInt32(dt.Rows[0]["Electrical_safety"]) == 1)
+            {
+                //lblelctrical.Text = "yes";
+                Image6.Visible = true;
+            }
+            else
+            {
+                lblelctrical.Text = "-";
+            }
+            if (Convert.ToInt32(dt.Rows[0]["Performance_analysis"]) == 1)
+            {
+                //lblperformance.Text = "yes";
+                Image7.Visible = true;
+            }
+            else
+            {
+                lblperformance.Text = "-";
             }
         }
     }

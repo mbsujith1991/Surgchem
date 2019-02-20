@@ -29,74 +29,76 @@ public partial class AddReport : System.Web.UI.Page
     HiddenField editreport_calibstatus = new HiddenField();
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        object usertypeObj = Session["Usertype"];
-        if (usertypeObj != null)
+        if (Request.IsAuthenticated && Session["Usertype"] != null)
         {
-            utypeid_hidden.Value = Session["Usertype"].ToString();
-        }
-        else
-        {
-            utypeid_hidden.Value = "1";
-        }
-
-        txtdateofreceipt.Text = txtdateofcalib.Text;
-
-        HtmlGenericControl listreport = (HtmlGenericControl)this.Master.FindControl("lireport");
-        listreport.Style.Add("background-color", "#195A7F");
-        if (!IsPostBack)
-        {
-            string editreport = Request.QueryString["editreport"];
-            if (editreport == "1")
+            object usertypeObj = Session["Usertype"];
+            if (usertypeObj != null)
             {
-                checkboxelectrical.Value = "0";
-                checkboxperform.Value = "0";
-                if (checkboxelectrical.Value == "0")
-                {
-                    elect_table.Visible = false;
-                }
-                if (checkboxperform.Value == "0")
-                {
-                    perf_table.Visible = false;
-                }
-                multiviewreport.ActiveViewIndex = 1;
-                Bind_EditReportinfo(1, 50);
-                btneditreport.Style.Add("background-color", "#195A7F");
-                btnaddreport.Style.Add("background-color", "#4892DB");
+                utypeid_hidden.Value = Session["Usertype"].ToString();
             }
             else
             {
-                checkboxelectrical.Value = "0";
-                checkboxperform.Value = "0";
-                if (checkboxelectrical.Value == "0")
-                {
-                    elect_table.Visible = false;
-                }
-                if (checkboxperform.Value == "0")
-                {
-                    perf_table.Visible = false;
-                }
-                chkelctrical.Checked = true;
-                chkperform.Checked = true;
-                perf_table.Visible = false;
-                elect_table.Visible = false;
-                MaxidReport_Pageload();
-                Bind_ReferenceDate();
-                Populate_Environ();
-                BindProductName();
-                BindHospitalname();
-                perfid_hidden.Value = string.Empty;
-                ddlmanuf.Items.Insert(0, "--Select Company--");
-                ddlmodel.Items.Insert(0, "--Select Model--");
-                ddlevicetype.Items.Insert(0, "--Select Device Type");
-                ddldeviceclass.Items.Insert(0, "--Select Classification--");
-                btnaddreport.Style.Add("background-color", "#195A7F");
-
+                utypeid_hidden.Value = "1";
             }
 
+            txtdateofreceipt.Text = txtdateofcalib.Text;
+
+            HtmlGenericControl listreport = (HtmlGenericControl)this.Master.FindControl("lireport");
+            listreport.Style.Add("background-color", "#195A7F");
+            if (!IsPostBack)
+            {
+                string editreport = Request.QueryString["editreport"];
+                if (editreport == "1")
+                {
+                    checkboxelectrical.Value = "0";
+                    checkboxperform.Value = "0";
+                    if (checkboxelectrical.Value == "0")
+                    {
+                        elect_table.Visible = false;
+                    }
+                    if (checkboxperform.Value == "0")
+                    {
+                        perf_table.Visible = false;
+                    }
+                    multiviewreport.ActiveViewIndex = 1;
+                    Bind_EditReportinfo(1, 50);
+                    btneditreport.Style.Add("background-color", "#195A7F");
+                    btnaddreport.Style.Add("background-color", "#4892DB");
+                }
+                else
+                {
+                    checkboxelectrical.Value = "0";
+                    checkboxperform.Value = "0";
+                    if (checkboxelectrical.Value == "0")
+                    {
+                        elect_table.Visible = false;
+                    }
+                    if (checkboxperform.Value == "0")
+                    {
+                        perf_table.Visible = false;
+                    }
+                    chkelctrical.Checked = true;
+                    chkperform.Checked = true;
+                    perf_table.Visible = false;
+                    elect_table.Visible = false;
+                    MaxidReport_Pageload();
+                    Bind_ReferenceDate();
+                    Populate_Environ();
+                    BindProductName();
+                    BindHospitalname();
+                    perfid_hidden.Value = string.Empty;
+                    ddlmanuf.Items.Insert(0, "--Select Company--");
+                    ddlmodel.Items.Insert(0, "--Select Model--");
+                    ddlevicetype.Items.Insert(0, "--Select Device Type");
+                    ddldeviceclass.Items.Insert(0, "--Select Classification--");
+                    btnaddreport.Style.Add("background-color", "#195A7F");
+                }
+            }
         }
-
-
+        else
+        {
+            Response.Redirect("Default.aspx");
+        }
     }
     #region functions
 
@@ -244,7 +246,7 @@ public partial class AddReport : System.Web.UI.Page
 
     public void BindProductName()
     {
-        db1.strCommand = "select ProductName from Product group by ProductName order by ProductName Asc";
+        db1.strCommand = "select ProductName from Product Where ProductName !='' group by ProductName order by ProductName Asc";
         DataTable dt_proname = db1.selecttable();
 
         ddlproductname.Items.Clear();
@@ -1831,7 +1833,7 @@ public partial class AddReport : System.Web.UI.Page
     }
     protected void txtdateofcalib_TextChanged(object sender, EventArgs e)
     {
-        Session["calibdate"] = txtdateofcalib.Text??string.Empty;
+        Session["calibdate"] = txtdateofcalib.Text ?? string.Empty;
         // DateTime year = Convert.ToDateTime(txtdateofcalib.Text).AddDays(364);
         DateTime year = Convert.ToDateTime(txtdateofcalib.Text, System.Globalization.CultureInfo.GetCultureInfo("hi-IN").DateTimeFormat).AddDays(364);
         txtduedate.Text = (year.Date).ToString("dd/MM/yyyy");
@@ -1840,7 +1842,7 @@ public partial class AddReport : System.Web.UI.Page
     }
     protected void ddlmanuf_SelectedIndexChanged(object sender, EventArgs e)
     {
-        txtmanu.Text = ddlmanuf.SelectedItem.Text??string.Empty;
+        txtmanu.Text = ddlmanuf.SelectedItem.Text ?? string.Empty;
         BindModel();
         //btnsavereport.Focus();
         //ddlmodel.Focus();
@@ -1852,11 +1854,11 @@ public partial class AddReport : System.Web.UI.Page
         BindDeviceType();
         BindDeviceClassi();
         Bind_Supply_Power();
-        txtmodel.Text = ddlmodel.SelectedItem.Text??string.Empty;
+        txtmodel.Text = ddlmodel.SelectedItem.Text ?? string.Empty;
         txtdevtype.Text = ddlevicetype.SelectedItem.Text;
-        txtdevclassification.Text = ddldeviceclass.SelectedItem.Text??string.Empty;
-        txtsupplydata.Text = txtsupply.Text.Trim()??string.Empty;
-        txtpowerdate.Text = txtpower.Text.Trim()??string.Empty;
+        txtdevclassification.Text = ddldeviceclass.SelectedItem.Text ?? string.Empty;
+        txtsupplydata.Text = txtsupply.Text.Trim() ?? string.Empty;
+        txtpowerdate.Text = txtpower.Text.Trim() ?? string.Empty;
         ddlcondition.Focus();
     }
     protected void ch_perf_CheckedChanged(object sender, EventArgs e)

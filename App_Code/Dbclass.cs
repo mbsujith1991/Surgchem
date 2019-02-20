@@ -43,38 +43,79 @@ public class Dbclass
     public void insert_stmnt(string qry)
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        con.Open();
-        SqlCommand cmd = new SqlCommand(qry, con);
-        cmd.ExecuteNonQuery();
-        con.Close();
+        try
+        {            
+            con.Open();
+            SqlCommand cmd = new SqlCommand(qry, con);
+            cmd.ExecuteNonQuery();
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }        
     }
     public void insertqry()
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        con.Open();
-        SqlCommand cmd = new SqlCommand(strCommand, con);
-        cmd.ExecuteNonQuery();
-        con.Close();
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand(strCommand, con);
+            cmd.ExecuteNonQuery();
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }        
     }
 
     public int executeQuery(string qry)
     {
         SqlConnection sCon = new SqlConnection(sqlcon);
-        SqlCommand cmd = new SqlCommand(qry, sCon);
-        sCon.Open();
-        int i = cmd.ExecuteNonQuery();
-        sCon.Close();
-        return i;
+        try
+        {
+            SqlCommand cmd = new SqlCommand(qry, sCon);
+            sCon.Open();
+            int i = cmd.ExecuteNonQuery();
+            return i;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            sCon.Close();
+        }
+        
     }
     public DataSet selectqry()
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        SqlCommand cmd = new SqlCommand(strCommand, con);
-        SqlDataAdapter da = new SqlDataAdapter(cmd);
-        DataSet ds = new DataSet();
-        da.Fill(ds);
-        con.Close();
-        return ds;
+        try
+        {
+            SqlCommand cmd = new SqlCommand(strCommand, con);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            return ds;
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }
     }
 
     public string getPwd()
@@ -85,65 +126,116 @@ public class Dbclass
         try
         {
             con.Open();
-            pwd = cmd.ExecuteScalar().ToString();
-            con.Close();
+            pwd = cmd.ExecuteScalar().ToString();            
         }
         catch (Exception ex)
         {
             pwd = ex.Message.ToString();
         }
+        finally
+        {
+            con.Close();
+        }
         return pwd;
-
     }
     public DataTable selecttable()
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        SqlCommand cmd = new SqlCommand(strCommand, con);
-        SqlDataAdapter da = new SqlDataAdapter(cmd);
-        DataTable dt = new DataTable();
-        da.Fill(dt);
-        con.Close();
-        return dt;
+        try
+        {
+            SqlCommand cmd = new SqlCommand(strCommand, con);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }
     }
 
     public SqlDataReader dataread()
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        con.Open();
-        SqlCommand cmd = new SqlCommand(strCommand,con);
-        SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-        //con.Close();
-        return dr;
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand(strCommand, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            //con.Close();
+            return dr;
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }
     }
 
     public SqlDataReader dataread_subcat()
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        con.Open();
-        SqlCommand cmd = new SqlCommand(strCommand, con);
-        SqlDataReader dr = cmd.ExecuteReader();
-        con.Close();
-        return dr;
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand(strCommand, con);
+            SqlDataReader dr = cmd.ExecuteReader();
+            return dr;
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }
     }
     public string executescalar()
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        con.Open();
-        SqlCommand cmd = new SqlCommand(strCommand, con);
-        string value = cmd.ExecuteScalar().ToString();
-        con.Close();
-        return value;
-
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand(strCommand, con);
+            string value = cmd.ExecuteScalar().ToString();
+            return value;
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }
     }
     public string executescalar_args(string query)
     {
         SqlConnection con = new SqlConnection(sqlcon);
-        con.Open();
-        SqlCommand cmd = new SqlCommand(query, con);
-        string value = cmd.ExecuteScalar().ToString();
-        con.Close();
-        return value;
-
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand(query, con);
+            string value = cmd.ExecuteScalar().ToString();
+            return value;
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
+        }
     }
     public string sclarVal()
     {
@@ -152,31 +244,35 @@ public class Dbclass
         {
             con.Open();
             SqlCommand cmd = new SqlCommand(strCommand, con);
-            string value = cmd.ExecuteScalar().ToString();
-            con.Close();
+            string value = cmd.ExecuteScalar().ToString();            
             return value;
         }
         catch (Exception ex)
         {
             return ex.Message.ToString();
-
         }
-
+        finally
+        {
+            con.Close();
+        }
     }
     public SqlDataReader getDataReader(string Qry)
     {
+        SqlConnection con = new SqlConnection(sqlcon);
         try
-        {
-            SqlConnection con = new SqlConnection(sqlcon);
+        {            
             SqlCommand cmd = new SqlCommand(Qry, con);
             con.Open();
             SqlDataReader sqldr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-            return sqldr;
-            
+            return sqldr;            
         }
-        catch
+        catch(Exception ex)
         {
-            throw;
+            throw ex;
+        }
+        finally
+        {
+            con.Close();
         }
     }
 

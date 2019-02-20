@@ -11,6 +11,7 @@ using System.Data;
 using System.Web.Script.Services;
 using System.IO;
 using System.Web.Security;
+using System.Configuration;
 
 public partial class _Default : System.Web.UI.Page
 {
@@ -18,7 +19,6 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         txtUsername.Focus();
-        
     }
     string usertype = string.Empty;
 
@@ -26,22 +26,18 @@ public partial class _Default : System.Web.UI.Page
     protected void btnlogin_Click(object sender, EventArgs e)
     {
         FormsAuthentication.Initialize();
-
-
         FormsAuthentication.SignOut();
         FormsAuthentication.Initialize();
-        
-        string query1 = "select * from LoginTb where Username='" + txtUsername.Value.Trim().Replace("'","''")+ "' and Password='" + txtPwd.Value.Trim().Replace("'", "''") + "'";
-        SqlDataReader reader = db1.getDataReader(query1);
+        db1.strCommand = "select * from LoginTb where Username='" + txtUsername.Value.Trim().Replace("'", "''") + "' and Password='" + txtPwd.Value.Trim().Replace("'", "''") + "'";
+        DataTable loginData = db1.selecttable();
         FormsAuthentication.HashPasswordForStoringInConfigFile(txtPwd.Value, "sha1");
         // Fill our parameters
-
-        if (reader.Read())
+        if (loginData.Rows.Count > 0)
         {
-            usertype = reader["Usertype"].ToString();
+            usertype = loginData.Rows[0]["Usertype"].ToString();
             // Create a new ticket used for authentication
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
-            1, txtUsername.Value, DateTime.Now, DateTime.Now.AddMinutes(30), true, reader.GetString(1), FormsAuthentication.FormsCookiePath);
+            1, txtUsername.Value, DateTime.Now, DateTime.Now.AddMinutes(30), true, loginData.Rows[0]["Username"].ToString(), FormsAuthentication.FormsCookiePath);
 
             // Hash the cookie for transport over the wire
             string hash = FormsAuthentication.Encrypt(ticket);
@@ -51,9 +47,9 @@ public partial class _Default : System.Web.UI.Page
             Response.Cookies.Add(cookie);
 
             //Redirect to requested URL, or homepage if no previous page requested
-            string returnUrl = Request.QueryString["ReturnUrl"];
-            if (returnUrl == null) returnUrl = "Login.aspx";
-            Session["Usertype"] = reader["Usertype"].ToString();
+            //string returnUrl = Request.QueryString["ReturnUrl"];
+            //if (returnUrl == null) returnUrl = "Login.aspx";
+            Session["Usertype"] = loginData.Rows[0]["Usertype"].ToString();
             string usertypeid = Session["Usertype"].ToString();
             if (usertypeid == null)
             {
@@ -62,13 +58,11 @@ public partial class _Default : System.Web.UI.Page
 
             if (usertypeid == "0")
             {
-                //SelectMethod();
                 Response.Redirect("Add_Hospital_admin.aspx");
 
             }
-            else if (usertypeid == "1" || usertypeid=="3" || usertypeid=="4" || usertypeid=="5" || usertypeid=="6")
+            else if (usertypeid == "1" || usertypeid == "3" || usertypeid == "4" || usertypeid == "5" || usertypeid == "6")
             {
-                //SelectMethod();
                 Response.Redirect("AddReport.aspx");
             }
             else if (usertypeid == "2")
@@ -79,8 +73,6 @@ public partial class _Default : System.Web.UI.Page
             {
                 Response.Redirect("Default.aspx");
             }
-
-
         }
         else
         {
@@ -90,24 +82,52 @@ public partial class _Default : System.Web.UI.Page
             //lbMsg.Visible = true;
             ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('Invalid Username/Password !');", true);
         }
-
-        reader.Close();
     }
 
-    //public void Dbbackup()
-    //{
-    //    db1.strCommand = "select * from Calibration_Status";
-    //    DataTable dt1 = db1.selecttable();
-    //    string test = JsonConvert.SerializeObject(dt1);
-    //    DataTable dt1_1 = (DataTable)JsonConvert.DeserializeObject(test, dt1.GetType());
-    //    string filename = "~/Temp/Calibration_Status.txt";
-    //    //StreamWriter sw = new StreamWriter(Server.MapPath(filename));
-    //    using (var writer = new StreamWriter(Server.MapPath(filename)))
-    //    {
-    //        writer.WriteLine(test);
-    //    }
-    //    HyperLink1.NavigateUrl = strFileName;
-    //}
+    private bool ValidateUser(string userName, string passWord)
+    {
+        SqlConnection conn;
+        SqlCommand cmd;
+        Dbclass db1 = new Dbclass();
+        string sqlcon = ConfigurationManager.ConnectionStrings["surgchemcon"].ToString();
+        string lookupPassword = null;
+        try
+        {
+            // Consult with your SQL Server administrator for an appropriate connection
+            // string to use to connect to your local SQL Server.
+            conn = new SqlConnection(sqlcon);
+            conn.Open();
+
+            // Create SqlCommand to select pwd field from users table given supplied userName.
+            cmd = new SqlCommand("Select Password from LoginTb where Username=@userName", conn);
+            cmd.Parameters.Add("@userName", SqlDbType.VarChar, 25);
+            cmd.Parameters["@userName"].Value = userName;
+
+            // Execute command and fetch pwd field into lookupPassword string.
+            lookupPassword = (string)cmd.ExecuteScalar();
+
+            // Cleanup command and connection objects.
+            cmd.Dispose();
+            conn.Dispose();
+        }
+        catch (Exception ex)
+        {
+            // Add error handling here for debugging.
+            // This error message should not be sent back to the caller.
+            System.Diagnostics.Trace.WriteLine("[ValidateUser] Exception " + ex.Message);
+        }
+
+        // If no password found, return false.
+        if (null == lookupPassword)
+        {
+            // You could write failed login attempts here to event log for additional security.
+            return false;
+        }
+
+        // Compare lookupPassword and input passWord, using a case-sensitive comparison.
+        return (0 == string.Compare(lookupPassword, passWord, false));
+
+    }
 
     [WebMethod]
     public static string SelectMethod()
