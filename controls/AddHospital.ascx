@@ -27,6 +27,8 @@
                  <asp:ListItem Text="Issuing Officer" Value="4"></asp:ListItem>
                  <asp:ListItem Text="BMT-MTH" Value="5"></asp:ListItem>
                  <asp:ListItem Text="BMT-ACH" Value="6"></asp:ListItem>
+                 <asp:ListItem Text="Technical Manager" Value="7"></asp:ListItem>
+                 <asp:ListItem Text="Quality Manager" Value="8"></asp:ListItem>
              </asp:DropDownList></td>
      </tr>
      <tr id="hospname" runat="server">
