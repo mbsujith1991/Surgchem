@@ -1132,7 +1132,7 @@ public partial class EditReport : System.Web.UI.Page
     }
     public void Bind_Issueofficer()
     {
-        db1.strCommand = "select * from LoginTb where Usertype='4'";
+        db1.strCommand = "select * from LoginTb where Usertype='7'";
         DataTable dt = db1.selecttable();
         if (dt.Rows.Count > 0)
         {

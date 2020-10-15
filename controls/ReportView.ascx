@@ -822,7 +822,7 @@
                     <td align="right">
                         <asp:Label ID="lblissueofficer" runat="server" Text=""></asp:Label>
                         <br />
-                        Officer - in - Charge<br />
+                        Technical Manager<br />
                         Testing & Analysis
                     </td>
                 </tr>

@@ -1229,7 +1229,7 @@ public partial class controls_ReportView : System.Web.UI.UserControl
     }
     public void Bind_Issueofficer()
     {
-        db1.strCommand = "select * from LoginTb where Usertype='4'";
+        db1.strCommand = "select * from LoginTb where Usertype='7'";
         DataTable dt = db1.selecttable();
         if (dt.Rows.Count > 0)
         {
